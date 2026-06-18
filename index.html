@@ -6,775 +6,1409 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bulletproof">
-<meta name="theme-color" content="#0e1217">
+<meta name="theme-color" content="#0b0b0c">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
-<style id="appfix"></style>
 <style>
+/* ===== Tactical Mono ===== */
+:root{
+  --bg:#0b0b0c; --surf:#141416; --bord:#26262a;
+  --text:#e6e4df; --muted:#6f6f6a; --acc:#9aa66b;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
-  background:#0e1217;color:#e8edf2;line-height:1.45;padding:0 0 60px}
-.wrap{max-width:560px;margin:0 auto;padding:0 14px}
-header{padding:26px 0 18px;text-align:center}
-header h1{font-size:25px;font-weight:800;letter-spacing:-.4px}
-header p{font-size:13px;color:#8a97a6;margin-top:5px}
-.legend{font-size:11.5px;color:#6f7c8b;text-align:center;margin:10px 0 4px}
+  background:var(--bg);color:var(--text);line-height:1.5;padding:0 0 70px;
+  font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:600px;margin:0 auto;padding:0 16px}
 
-.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:#6f7c8b;
-  margin:22px 4px 8px;text-transform:uppercase}
+/* ===== A/B visibility ===== */
+.vb{display:none}
+body.block-b .va{display:none}
+body.block-b .vb{display:block}
 
-/* primer */
-.primer{background:#161c24;border:1px solid #232c38;border-radius:14px;padding:14px 16px;margin-bottom:6px}
-.primer h3{font-size:14px;margin-bottom:3px}
-.primer .note{font-size:12px;color:#8a97a6;margin-bottom:10px}
-.prim{display:flex;justify-content:space-between;font-size:13.5px;padding:6px 0;border-bottom:1px solid #1e2630}
-.prim:last-child{border:0} .prim b{color:#9fc6ee}
+/* ===== header ===== */
+header{padding:34px 0 8px}
+header h1{font-size:13px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--text)}
+header .tagline{font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.3px}
+.howto{font-size:11.5px;color:var(--muted);margin-top:14px;letter-spacing:.2px;line-height:1.55}
 
-/* day cards */
-.card{background:#161c24;border:1px solid #232c38;border-radius:16px;margin-bottom:11px;overflow:hidden}
-.card-head{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;cursor:pointer}
-.ch-left{display:flex;align-items:center;gap:12px}
-.tag{font-size:9.5px;font-weight:800;letter-spacing:.8px;color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap}
-.card-title{font-size:17px;font-weight:700}
-.card-sub{font-size:12px;color:#8a97a6;margin-top:1px}
-.ch-right{display:flex;align-items:center;gap:10px}
-.time{font-size:11.5px;color:#6f7c8b;white-space:nowrap}
-.chev{color:#6f7c8b;transition:transform .2s;font-size:16px}
-.chev.big{font-size:20px}
-.card.open .chev.big{transform:rotate(180deg)}
-.card-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.card.open .card-body{max-height:3000px}
-.card-body{padding:0 12px} .card.open .card-body{padding:0 12px 12px}
+/* ===== block toggle ===== */
+.blockbar{margin:20px 0 6px}
+.blockbar .cur{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.toggle{display:flex;gap:8px}
+.tbtn{flex:1;background:var(--surf);border:1px solid var(--bord);border-radius:10px;
+  padding:11px 10px;cursor:pointer;text-align:left;color:var(--muted);transition:.15s}
+.tbtn .tt{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block}
+.tbtn .ts{font-size:10.5px;letter-spacing:.5px;margin-top:3px;display:block;color:var(--muted)}
+.tbtn.active{border-color:var(--acc);color:var(--text)}
+.tbtn.active .tt{color:var(--acc)}
+.tbtn.active .ts{color:var(--text)}
 
-/* exercise rows */
-.ex{border-top:1px solid #1e2630}
-.ex-head{display:flex;align-items:center;gap:10px;padding:12px 4px;cursor:pointer}
-.ex-name{flex:1;font-size:14.5px;font-weight:600}
-.ex-sr{font-size:13px;color:#9fc6ee;font-weight:600;white-space:nowrap}
-.chev{flex-shrink:0}
+/* ===== section labels ===== */
+.section-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted);
+  text-transform:uppercase;margin:30px 2px 12px;padding-top:4px;
+  border-top:1px solid var(--bord);padding-top:18px}
+.section-label:first-of-type{border-top:0;padding-top:4px}
+
+/* ===== cards (collapse) ===== */
+.card{background:var(--surf);border:1px solid var(--bord);border-radius:12px;
+  margin-bottom:10px;overflow:hidden}
+.card-head{display:flex;justify-content:space-between;align-items:center;
+  padding:16px 16px;cursor:pointer;gap:12px}
+.ch-left{min-width:0}
+.card-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted)}
+.card-title{font-size:15px;font-weight:600;letter-spacing:.3px;margin-top:3px}
+.card-sub{font-size:11.5px;color:var(--muted);margin-top:3px;letter-spacing:.2px}
+.ch-right{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.time{font-size:10.5px;color:var(--muted);letter-spacing:.5px;white-space:nowrap}
+.chev{color:var(--muted);transition:transform .25s;font-size:13px}
+.card.open>.card-head .chev{transform:rotate(180deg)}
+.card-body{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 16px}
+.card.open>.card-body{max-height:9000px;padding:0 16px 14px}
+
+/* day card: block heading inside body */
+.blkhead{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--acc);padding:14px 2px 4px;border-top:1px solid var(--bord);margin-top:4px}
+.blkhead:first-child{border-top:0;margin-top:0;padding-top:8px}
+.va .blkhead:first-child,.vb .blkhead:first-child{border-top:0}
+
+/* ===== exercise rows ===== */
+.ex{border-top:1px solid var(--bord)}
+.ex-head{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer}
+.ex-name{flex:1;font-size:14px;font-weight:500;letter-spacing:.2px;min-width:0}
+.ex-sr{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.5px;white-space:nowrap}
+.ex .chev{flex-shrink:0}
 .ex.open .chev{transform:rotate(180deg)}
 .ex-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.ex.open .ex-body{max-height:400px;padding-bottom:12px}
-.cue{font-size:13px;color:#b8c4d0;padding:0 4px 9px}
-.vid{display:inline-block;font-size:12.5px;font-weight:600;color:#fff;background:#c0392b;
-  padding:7px 13px;border-radius:8px;text-decoration:none;margin-left:4px}
-.vid.sm{padding:3px 9px;margin-left:6px;font-size:12px}
+.ex.open .ex-body{max-height:900px;padding-bottom:14px}
+.cue{font-size:13px;color:var(--text);opacity:.85;padding:0 2px 11px;line-height:1.55}
 
-.finisher{margin-top:12px;padding:11px 13px;background:#11201a;border:1px solid #1f3a2d;
-  border-radius:10px;font-size:12.5px;color:#bfe0cd}
-.fin-label{font-size:9.5px;font-weight:800;letter-spacing:.8px;color:#27AE60;display:block;margin-bottom:3px}
+/* subs + watch chips */
+.lbl{display:inline-block;font-size:8.5px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 7px;border-radius:4px;margin-bottom:7px;
+  color:var(--muted);background:transparent;border:1px solid var(--bord)}
+.lbl.warn{color:var(--acc);border-color:var(--acc)}
+.subs{padding:0 2px 10px}
+.sub{font-size:12.5px;color:var(--muted);padding:3px 0;line-height:1.5}
+.sub b{color:var(--text);font-weight:600}
+.watch{padding:0 2px 8px}
+.watch .lbl{margin-bottom:7px}
+.watch p{font-size:12.5px;color:var(--muted);padding:2px 0;line-height:1.55}
+.watch b{color:var(--text);font-weight:600}
 
-/* recovery + pullup share card look */
-.block{background:#161c24;border:1px solid #232c38;border-radius:16px;padding:6px 12px 12px;margin-bottom:11px}
-.block .bhead{padding:13px 4px 4px} .block h3{font-size:16px;font-weight:700}
-.block .bsub{font-size:12px;color:#8a97a6;margin-top:2px}
-.stage{border-top:1px solid #1e2630;padding:11px 4px}
-.stage-t{font-size:14px;font-weight:700;color:#9fc6ee}
-.stage-d{font-size:13px;color:#b8c4d0;margin-top:2px}
+.vid{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--text);background:transparent;border:1px solid var(--bord);
+  padding:7px 13px;border-radius:7px;text-decoration:none;margin:2px}
 
-.foot{font-size:12px;color:#6f7c8b;text-align:center;margin-top:22px;padding:0 10px;line-height:1.6}
-.foot b{color:#9aa7b5}
-.flag{background:#1d1410;border:1px solid #3a2a1c;border-radius:12px;padding:13px 15px;
-  font-size:12.5px;color:#d9c3a8;margin-bottom:11px}
-.flag b{color:#e8b87a}
+/* finisher / core block tiles */
+.tile{margin-top:12px;padding:13px 14px;background:transparent;border:1px solid var(--bord);
+  border-radius:10px}
+.tile .tl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--acc);display:block;margin-bottom:6px}
+.tile .td{font-size:12.5px;color:var(--text);opacity:.9;line-height:1.55}
+.tile .td b{color:var(--text);opacity:1}
 
-/* researched subs + watch-for */
-.subs{padding:0 4px 8px}
-.lbl{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.8px;padding:2px 6px;
-  border-radius:5px;margin-bottom:6px}
-.lbl{color:#9fc6ee;background:#16263a;border:1px solid #234366}
-.lbl.warn{color:#e8b87a;background:#2a1d10;border:1px solid #4a3320}
-.sub{font-size:12.5px;color:#aab6c4;padding:3px 0;line-height:1.4}
-.sub b{color:#d4dde7;font-weight:600}
-.watch{font-size:12.5px;color:#c9b79d;padding:2px 4px 6px;line-height:1.45}
-.watch .lbl{margin-right:6px;margin-bottom:0;vertical-align:middle}
+/* simple list rows (primer, recovery, daily5, pullup) */
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  font-size:13.5px;padding:9px 2px;border-top:1px solid var(--bord)}
+.row:first-child{border-top:0}
+.row .rn{color:var(--text)}
+.row .rv{color:var(--acc);font-weight:600;letter-spacing:.5px;white-space:nowrap;font-size:12.5px}
 
-/* go-deeper prose cards */
-.deep p{font-size:13px;color:#b8c4d0;padding:0 4px 9px}
-.deep ul{margin:0 0 9px;padding:0 4px 0 22px}
-.deep li{font-size:13px;color:#b8c4d0;padding:2px 0;line-height:1.45}
-.deep b{color:#d4dde7}
-.deep .hl{color:#9fc6ee;font-weight:600}
+.stage{border-top:1px solid var(--bord);padding:13px 2px}
+.stage:first-child{border-top:0}
+.stage-t{font-size:13px;font-weight:600;color:var(--text);letter-spacing:.3px}
+.stage-t .badge{font-size:11px;color:var(--acc);font-weight:600;margin-left:8px}
+.stage-d{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.55}
+.stage-d b{color:var(--text);font-weight:600}
+
+/* prose (deeper / rules / lowback) */
+.prose p{font-size:13px;color:var(--muted);padding:0 2px 11px;line-height:1.6}
+.prose p:last-child{padding-bottom:2px}
+.prose b{color:var(--text);font-weight:600}
+.prose .hl{color:var(--acc);font-weight:600}
+.prose ul{margin:0 0 11px;padding:0 2px 0 20px}
+.prose li{font-size:13px;color:var(--muted);padding:3px 0;line-height:1.55}
+.prose li b{color:var(--text)}
+.prose h4{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--acc);margin:6px 2px 9px;padding-top:12px;border-top:1px solid var(--bord)}
+.prose h4:first-child{padding-top:2px;border-top:0}
+
+/* callout / flag */
+.flag{border:1px solid var(--bord);border-radius:10px;padding:14px 15px;margin:12px 0;
+  font-size:12.5px;color:var(--muted);line-height:1.6}
+.flag b{color:var(--acc);font-weight:700}
+.flag .red{color:var(--text);font-weight:600}
+
+.foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:28px;
+  padding:18px 8px 0;border-top:1px solid var(--bord);line-height:1.7;letter-spacing:.2px}
+.foot b{color:var(--text)}
 </style></head>
-<body><div class="wrap">
+<body class="block-a"><div class="wrap">
+
 <header>
-  <h1>The Bulletproof Athlete</h1>
-  <p>Lean · capable · built to do anything</p>
-  <div class="legend">Low back first, most days · tap any card to open · tap an exercise for cues, swaps &amp; video</div>
+  <h1>BULLETPROOF</h1>
+  <div class="tagline">Lean · capable · built to do anything</div>
+  <div class="howto">Toggle your current block, then train the day you're on. Tap any card to open · tap an exercise for cues, swaps &amp; watch-fors.</div>
 </header>
 
-<div class="section-label">Before every lift · 6 min</div>
-<div class="primer">
-  <h3>The Primer</h3>
-  <p class="note">Targets your ankles, hips & pelvic tilt. Do it after 2–3 min easy sled/bike to get warm.</p>
-  <div class="prim"><span>Ankle wall rocks</span><b>10 / side</b></div><div class="prim"><span>Couch stretch</span><b>30s / side</b></div><div class="prim"><span>90/90 hip rotations</span><b>5 / side</b></div><div class="prim"><span>Dead bug</span><b>8 / side</b></div><div class="prim"><span>Glute bridge</span><b>12</b></div><div class="prim"><span>Band pull-apart</span><b>15</b></div>
+<div class="blockbar">
+  <div class="cur">Current Block — <span id="curlabel">A · Strength · Weeks 1–2</span></div>
+  <div class="toggle">
+    <button class="tbtn active" id="btnA">
+      <span class="tt">Block A · Strength</span>
+      <span class="ts">Weeks 1–2 · heavy, low reps</span>
+    </button>
+    <button class="tbtn" id="btnB">
+      <span class="tt">Block B · Hypertrophy</span>
+      <span class="ts">Weeks 3–4 · volume, pump</span>
+    </button>
+  </div>
 </div>
 
-<div class="section-label">Bulletproof Low Back · most days</div>
-<div class="card" style="--c:#C0392B">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#C0392B">DAILY 5</span>
-          <div><div class="card-title">The Daily 5</div><div class="card-sub">McGill Big 3 + 2 — your #1 priority</div></div>
-        </div>
-        <div class="ch-right"><span class="time">5–10 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><p class="cue">Goal is <b>endurance, not max effort</b>. Short holds, smooth breathing, short rests — never grind to failure. Use a descending pyramid (more reps early, fewer as you fatigue). Build holds and reps over weeks; don't start at the top. Do it most days — lifting, recovery, or rest.</p><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Modified curl-up</div>
-        <div class="ex-sr">6→4→2 ×10s</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">One knee bent, other leg straight. Hands under the low back to keep its natural arch. Lift head + shoulders barely off the floor. <b>Cue:</b> the spine doesn't move — only head/chest lift, chin tucked.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=mcgill%20modified%20curl%20up%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Don't flatten the low back into the floor (keep the natural arch), and no neck cranking — chin stays tucked.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Side plank</div>
-        <div class="ex-sr">5→3→1 ×10s / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Forearm under shoulder. Knees bent to start, legs straight to progress. Lift hips to a straight line, brace abs. <b>Cue:</b> straight line head-to-feet, hips up.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=side%20plank%20side%20bridge%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> No sagging at the hips and no rotating the torso — stay stacked and stiff.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Bird dog</div>
-        <div class="ex-sr">5–10 ×10s / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Hands and knees, spine neutral, abs lightly braced. Extend opposite arm + leg to level — no higher. <b>Cue:</b> hips and shoulders stay square — a glass of water on your low back can't spill.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=bird%20dog%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Hips/shoulders twisting or the back arching — move slow, keep the pelvis level.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Glute bridge (ISO hold)</div>
-        <div class="ex-sr">3–5 ×10s</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Knees bent, feet flat. Squeeze glutes and drive hips to a straight line shoulder-to-knee, hold at the top. <b>Cue:</b> the glutes finish the rep, not the spine.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=glute%20bridge%20iso%20hold%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Don't arch the low back to get higher — finish in a posterior tilt, ribs down, glutes locked.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Couch / hip-flexor stretch</div>
-        <div class="ex-sr">2 × 30–45s / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Half-kneeling, rear shin on a bench/wall (or floor). Squeeze the down-leg glute and tuck the pelvis under. <b>Cue:</b> the stretch comes from the glute squeeze + pelvic tuck, not from arching the back.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=couch%20stretch%20hip%20flexor%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Arching the low back for "more stretch" — tuck the pelvis, squeeze the glute on the stretched side.</div>
-      </div>
-    </div></div>
-    </div><div class="card" style="--c:#C0392B">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#C0392B">BRACE</span>
-          <div><div class="card-title">Bracing &amp; Daily Habits</div><div class="card-sub">Brace, don't bend</div></div>
-        </div>
-        <div class="ch-right"><span class="time">read once</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body deep">
-        <p><b>Brace before every working set:</b></p>
-        <ul>
-          <li><b>360° breath</b> — inhale into belly <i>and</i> sides/low back, expand all the way around the waistband.</li>
-          <li><b>Brace, then lift</b> — stiffen the abs like taking a light punch (~20–30% for daily loads, harder for max). Exhale slow through the sticking point.</li>
-          <li><b>Hinge cue</b> — hips back, chest leads, spine neutral and locked. The bar moves because the hips move, not the spine.</li>
-        </ul>
-        <p><b>Through the day:</b></p>
-        <ul>
-          <li>Ribs stacked over pelvis — not flared ribs / butt pushed back. Glutes lightly on, don't hang on one hip.</li>
-          <li>Break up sitting — stand/walk every 30–45 min.</li>
-          <li><b>Morning hygiene</b> — discs are swollen and flexion-vulnerable the first hour up; no toe-touches or heavy hinging first thing.</li>
-        </ul>
-        <p><b>Stop doing:</b></p>
-        <ul>
-          <li>No loaded spinal flexion — sit-ups, crunches, Russian twists, rounding under load (the exact mechanism that herniates discs).</li>
-          <li>No end-range loaded extension — heavy back extensions / good mornings cranked into an arch feed the tilt.</li>
-          <li>No ego-loading the hinge — leave reps in the tank; never round to move weight.</li>
-        </ul>
-      </div>
-    </div><div class="card" style="--c:#C0392B">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#C0392B">PROGRESS</span>
-          <div><div class="card-title">Progression &amp; Red Flags</div><div class="card-sub">How to build it — and when to stop</div></div>
-        </div>
-        <div class="ch-right"><span class="time">read once</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body deep">
-        <p><b>Progress the Big 3 over 4–8 weeks, in this order:</b></p>
-        <ul>
-          <li><b>Extend the holds first</b> — e.g. side plank 5×5s → 5×8s → 5×10s.</li>
-          <li><b>Then add reps</b> — build curl-up / bird dog / side plank toward more reps at a clean 10s hold.</li>
-          <li><b>Then a harder variation</b> — knees-down → legs-straight side plank; bridge → single-leg or loaded hip-thrust ISO. Endurance and control go up; spinal load doesn't.</li>
-        </ul>
-        <p><b>Signs it's working:</b> longer pain-free holds, easier neutral-spine hinge, less stiffness after sitting, fewer flare-ups, stronger carries/grip.</p>
-        <div class="flag"><b>RED FLAGS — stop and get assessed:</b><br>· Sharp / shooting pain down the leg, worsening or past the knee<br>· Numbness or pins-and-needles in the leg, groin, or <b>saddle area</b><br>· Foot or leg weakness, foot drop, a leg that gives out<br>· <b>ANY change in bladder or bowel control = ER now</b> (possible cauda equina — don't wait).</div>
-        <p>Not alarmist: a confirmed herniated disc is worth <b>one</b> physio visit to confirm it's muscular and manageable vs. structural, and to check your directional preference (most discs feel better with extension/standing, worse with flexion/sitting — which validates the avoid-flexion rules). One visit gives a green light and a baseline. Most herniations improve with exactly this loading-smart, endurance-based work.</p>
-      </div>
-    </div>
-
+<!-- =================== THE WEEK =================== -->
 <div class="section-label">The Week</div>
-<div class="card" style="--c:#2E75B6">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#2E75B6">LOWER</span>
-          <div><div class="card-title">Squat Day</div><div class="card-sub">Quad-focused, back-safe</div></div>
-        </div>
-        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Belt squat</div>
-        <div class="ex-sr">4 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Your leg engine. Load hangs from the hips, not the spine — zero axial compression. Stand tall, sink between the handles, drive through the whole foot. This is the bilateral squat your disc can actually tolerate.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=belt%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Hack squat</b> — busy station; back supported, similar quad-bilateral load.</div><div class="sub"><b>Leg press</b> — minimal-equipment alt; load without holding anything, spine off the pad.</div><div class="sub"><b>Heel-elevated goblet squat</b> — disc-friendly regression; one DB, stay tall, cap depth before the pelvis tucks.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Low back rounding / pelvis tucking at the bottom — stop before the spine moves, keep ribs over hips. No back squat — keep the load on the belt, never the bar on your back.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Bulgarian split squat</div>
-        <div class="ex-sr">3 × 8–10 / leg</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Rear foot on a bench, drop straight down, drive through the front heel. Unilateral load builds dense legs and fixes hip weakness with minimal spinal demand.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=bulgarian%20split%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Reverse lunge</b> — busy station / no bench; easiest on the knee, same unilateral hit.</div><div class="sub"><b>Split squat, both feet on floor (DBs at sides)</b> — minimal-equipment; more stable, less balance demand.</div><div class="sub"><b>Belt squat / leg press</b> — disc-and-balance-safer regression when fatigued, spine unloaded.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Sitting upright into an anterior tilt — lean ~25–35° forward over the front leg to keep the low back neutral. Hold DBs at your sides (suitcase), not racked, to avoid loading the spine.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Leg press</div>
-        <div class="ex-sr">3 × 10–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Your strength — keep it, load it heavy. Feet mid-platform, control the way down, don't let your low back round off the pad.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=leg%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Hack squat machine</b> — when press is busy; similar load, back supported.</div><div class="sub"><b>Heel-elevated goblet squat</b> — minimal-equipment day; one DB, same quad bias.</div><div class="sub"><b>Single-leg press</b> — disc-safer; even out side-to-side, lighter spinal demand.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Low back rounding off the pad at the bottom — stop before the pelvis tucks. Slamming knees into lockout — keep them soft.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Leg extension</div>
-        <div class="ex-sr">3 × 12–15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Quad finisher — go close to failure and chase the burn. You're strong here.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=leg%20extension%20machine%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Sissy squat (assisted)</b> — when the machine is busy; bodyweight quad isolation.</div><div class="sub"><b>Heel-elevated goblet squat</b> — compound alt that still hammers quads.</div><div class="sub"><b>Single-leg extension</b> — even out side-to-side; lighter regression.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Yanking with momentum into lockout — control the eccentric, pause at the top. Butt sliding / arching — keep the back pinned to the pad.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Seated calf raise</div>
-        <div class="ex-sr">3 × 12–15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Seated is the disc-safe default — it keeps axial load off the spine (vs. standing raises loaded on the shoulders). Full stretch at the bottom, pause at the top. Biases the soleus; builds ankle/lower-leg durability for running.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=seated%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Leg-press calf press</b> — when seated is busy; no axial load on the spine at all.</div><div class="sub"><b>Single-leg raise off a step</b> — minimal-equipment / different gym.</div><div class="sub"><b>Standing calf raise</b> — only if back feels fine; heavier loaded-on-shoulders version, more spinal load.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Bouncing through partial ROM — full stretch and full squeeze, pause both ends. Avoid heavy standing/shoulder-loaded versions — keep axial load off the disc.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Heavy farmer's carry</div>
-        <div class="ex-sr">3 × 30–40 m</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Pick up heavy DBs/handles, walk tall, brace your core. Grip + traps + anti-tilt in one.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=farmers%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Trap-bar carry</b> — when DBs/handles are taken; easy to load heavy, neutral grip.</div><div class="sub"><b>Single-arm (suitcase) carry</b> — minimal-equipment; trains anti-side-bend core.</div><div class="sub"><b>Loaded sled drag (forward)</b> — disc-safer; grip + legs, near-zero spinal load.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Shrugging into the traps and losing neutral spine — stand tall, brace before you pick up. Grabbing off the floor rounded — start from blocks/pins at mid-shin.</div>
-      </div>
-    </div><div class="finisher"><span class="fin-label">FINISHER</span> Optional: Sled push × 4–6 lengths, heavy. No soreness penalty, all engine. <a class="vid sm" href="https://www.youtube.com/results?search_query=sled%20push%20exercise%20how%20to" target="_blank" rel="noopener">▶</a><br><b>Swaps:</b> incline treadmill push-walk (hands on rail) or bike/stair sprints when no sled. Keep a long spine, drive through the legs — don't round to push low handles.</div></div>
-    </div><div class="card" style="--c:#C0392B">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#C0392B">UPPER</span>
-          <div><div class="card-title">Push Day</div><div class="card-sub">Chest, shoulders, triceps</div></div>
-        </div>
-        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Barbell bench press</div>
-        <div class="ex-sr">4 × 5–8</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Your strength builder. Leave 1 rep in the tank on the last set. Add reps, then add weight.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20bench%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Incline DB press</b> — when the rack is busy; shifts emphasis to upper chest.</div><div class="sub"><b>Machine chest press / Smith bench</b> — disc-safer; back supported, easy to bail solo.</div><div class="sub"><b>Flat DB press</b> — minimal-equipment; more stretch, easier on the shoulders.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Elbows flaring to 90° — tuck to ~45–60°, pin the shoulder blades. Big lumbar bridge — small arch is fine, don't overextend; glutes stay on the bench.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Incline DB press</div>
-        <div class="ex-sr">3 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Upper chest = the broad look. Get a full stretch at the bottom of each rep.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=incline%20dumbbell%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Incline machine / Smith incline</b> — when DBs are taken; easy to overload safely.</div><div class="sub"><b>Flat or low-incline DB press</b> — minimal-equipment; different emphasis.</div><div class="sub"><b>Incline cable press</b> — constant tension, joint-friendly.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Bench too steep (&gt;45°) — turns it into a shoulder press; keep it ~30°. Elbows flaring wide at the bottom — keep a slight tuck.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Standing DB shoulder press</div>
-        <div class="ex-sr">3 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Standing makes your core work too, but it tempts a lumbar arch — for the disc, default to seated/back-supported. Press overhead, don't lean back.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=standing%20dumbbell%20shoulder%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Seated DB press (back supported)</b> — disc-safer default; removes standing spinal load.</div><div class="sub"><b>Machine shoulder press</b> — when DBs are busy; fixed path, easy to load.</div><div class="sub"><b>Landmine press</b> — back-friendly angle, less overhead strain.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Leaning back and arching the lumbar to grind reps — if the back arches to finish, it's too heavy. Elbows flaring hard — keep them slightly in front, wrists over elbows.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Ring dips</div>
-        <div class="ex-sr">3 × 6–10</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Use foot assistance to scale. Brutal triceps + chest. Machine dip is a fine sub.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=ring%20dips%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Parallel-bar / machine dips</b> — when rings are taken or for more stability.</div><div class="sub"><b>Bench/box dips (feet forward)</b> — easier regression, scalable.</div><div class="sub"><b>Close-grip / decline push-ups</b> — minimal-equipment substitute.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Dropping too deep with shoulders rolling forward — keep depth where the shoulder stays stable. Flaring elbows and shrugging up — elbows track back, shoulders packed.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Cable lateral raise</div>
-        <div class="ex-sr">3 × 12–20</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Shoulder width — the biggest driver of the V-taper. Lead with the elbow.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=cable%20lateral%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>DB lateral raise</b> — when the cable is busy; peak tension at the top.</div><div class="sub"><b>Lateral-raise machine</b> — fixed path, easy to push near failure.</div><div class="sub"><b>Lean-away single-arm cable raise</b> — best side-delt stretch; one arm at a time.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Swinging/heaving with the traps — go lighter, lead with the elbow, control the lowering. Shrugging toward the ear — neck long, drive width out, not up.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Triceps pushdown</div>
-        <div class="ex-sr">3 × 12–15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Arm size. Keep elbows pinned to your sides.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=triceps%20pushdown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Overhead cable/rope extension</b> — when busy; biases the long head (more stretch).</div><div class="sub"><b>DB or EZ-bar skull crusher</b> — minimal-equipment; keep it light for the elbows.</div><div class="sub"><b>Ring/bench dips</b> — compound triceps option.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Elbows drifting forward, lats taking over — pin elbows, only the forearm moves. Leaning the torso into it — stay upright, let the triceps drive.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Fat-grip dead hang</div>
-        <div class="ex-sr">3 × max time</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Hang from a thick bar/grips as long as you can. Grip work + spinal decompression for your back.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=dead%20hang%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Towel-over-bar hang</b> — when no fat grips; same support-grip overload.</div><div class="sub"><b>Standard bar hang + Fat Gripz on a handle</b> — minimal-equipment swap.</div><div class="sub"><b>Fat-grip carry hold (standing)</b> — back-friendlier if shoulder hang is uncomfortable.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Hanging fully passive with shoulders at the ears — add a slight scapular pack. Going to full hand failure too early — build hang time progressively.</div>
-      </div>
-    </div><div class="finisher"><span class="fin-label">SLED / AIRBIKE FINISHER</span> 6–10 min hard intervals: sled pushes 6–8 × 20yd, or airbike 8–10 × 20–30s. Spares the back &amp; ankle, drives fat loss. <a class="vid sm" href="https://www.youtube.com/results?search_query=sled%20push%20intervals%20exercise%20how%20to" target="_blank" rel="noopener">▶</a><br><b>Swaps:</b> incline treadmill push-walk (hands on rail) or stair sprints when no sled/bike. Long spine, drive through the legs — don't round to push.</div></div>
-    </div><div class="card" style="--c:#27AE60">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#27AE60">CONDITIONING</span>
-          <div><div class="card-title">Playground Day</div><div class="card-sub">Pick one — rotate weekly</div></div>
-        </div>
-        <div class="ch-right"><span class="time">30–40 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><div class="ex">
-              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-                <div class="ex-name">Sled intervals</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
-              </div>
-              <div class="ex-body"><p class="cue">10 min easy to warm up, then 8–10 rounds: hard 20–30 m push, walk back to recover. Slow 5-min drag to finish.</p>
-              <a class="vid" href="https://www.youtube.com/results?search_query=sled%20push%20intervals%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-              <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Prowler pushes/drags</b> — same stimulus, whatever's available.</div><div class="sub"><b>Incline treadmill walk-pushes or bike sprints</b> — when no sled.</div><div class="sub"><b>Stair intervals</b> — minimal-equipment conditioning.</div></div>
-              <div class="watch"><span class="lbl warn">WATCH FOR</span> Form collapsing and the back rounding on heavy pushes — long spine, moderate the load. Too much volume that wrecks lifting recovery — keep intervals short and crisp.</div></div>
-            </div><div class="ex">
-              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-                <div class="ex-name">Heavy bag</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
-              </div>
-              <div class="ex-body"><p class="cue">6–8 rounds of 2–3 min (punches, knees, movement), 60s rest. Stress relief + engine.</p>
-              <a class="vid" href="https://www.youtube.com/results?search_query=heavy%20bag%20workout%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-              <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Shadowboxing with light DBs</b> — when no bag; conditioning-focused.</div><div class="sub"><b>Battle ropes</b> — similar full-body interval, zero spinal load.</div><div class="sub"><b>Jump rope / fast sled</b> — alternate conditioning modes.</div></div>
-              <div class="watch"><span class="lbl warn">WATCH FOR</span> Wild rotational power punches that torque the lumbar — keep rotation controlled and core braced. Wrist/hand injury — wrap up, snap punches, don't muscle the bag.</div></div>
-            </div><div class="ex">
-              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-                <div class="ex-name">Zone 2 run</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
-              </div>
-              <div class="ex-body"><p class="cue">20–30 min easy jog you can hold a conversation through. Build toward 35–40 min over time.</p>
-              <a class="vid" href="https://www.youtube.com/results?search_query=zone%202%20running%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-              <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Incline treadmill walk</b> — disc/joint-safer; same aerobic stimulus, less impact.</div><div class="sub"><b>Bike or elliptical Zone 2</b> — minimal-impact, easy on ankles/back.</div><div class="sub"><b>Rower at easy pace</b> — full-body Zone 2 (watch lumbar position).</div></div>
-              <div class="watch"><span class="lbl warn">WATCH FOR</span> Drifting out of true Zone 2 — keep it conversational (~60–70% max HR) or it becomes a stressor. Overstriding/heel-slamming — shorten the stride or swap to incline walk.</div></div>
-            </div><div class="finisher"><span class="fin-label">ADD-ON</span> Grip add-on (any option, 5 min): 3 rounds of plate pinch carries or fat-bar holds. <a class="vid sm" href="https://www.youtube.com/results?search_query=plate%20pinch%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶</a><br><b>Swaps:</b> hub/grip-block pinch hold or towel pinch carry when no smooth plates. Pick a weight you can hold cleanly the full distance — no jerky regrips; stand tall, don't hunch.</div></div>
-    </div><div class="card" style="--c:#2E75B6">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#2E75B6">LOWER</span>
-          <div><div class="card-title">Hinge Day</div><div class="card-sub">Posterior chain — fixes your back & tilt</div></div>
-        </div>
-        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Trap-bar deadlift from blocks</div>
-        <div class="ex-sr">4 × 5–8</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Your primary hinge. Bar starts at mid-shin or higher on blocks/pins — <b>NEVER the floor</b>. Neutral grip inside the bar keeps the torso upright and cuts spinal shear. Brace, push hips back, drive through the legs. Stop the moment the back wants to round.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=trap%20bar%20deadlift%20from%20blocks%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>RDL from pins/blocks</b> — busy station; same mid-shin start, more hamstring stretch, keep it neutral-spine.</div><div class="sub"><b>Single-leg / B-stance RDL (DBs from a low step)</b> — minimal-equipment, disc-safer; lighter spinal load.</div><div class="sub"><b>Lying/seated hamstring curl</b> — disc-safer regression when the back's cranky; zero spinal load.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Pulling with the back instead of the legs/hips — brace hard, hips back, spine locked neutral; bar stays close. Never reset from the floor — always start from blocks/pins at mid-shin+.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Lying/seated hamstring curl</div>
-        <div class="ex-sr">3 × 10–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">You max these — load hard. Control the lowering.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=lying%20hamstring%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Swap lying↔seated</b> — whichever machine is open; seated adds hip-flexed stretch.</div><div class="sub"><b>Nordic curl (assisted) / sliding leg curl</b> — minimal-equipment; heavy eccentric.</div><div class="sub"><b>Single-leg curl</b> — fix side-to-side imbalance.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Hips popping off the pad to cheat the weight — keep hips pinned, lighten if they rise. Slamming the weight down — control the eccentric.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Hip thrust</div>
-        <div class="ex-sr">3 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Spine-sparing glute driver. Shoulders on bench, drive through heels, squeeze hard at the top. Finish in a posterior pelvic tilt, chin tucked — don't hyperextend the low back to chase height. Builds the glutes that pull the tilt back to neutral.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20hip%20thrust%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Single-leg hip thrust</b> — when the bench/barbell is taken; bodyweight or one DB.</div><div class="sub"><b>Glute bridge off the floor</b> — minimal-equipment, shorter ROM.</div><div class="sub"><b>Cable pull-through / machine glute drive</b> — disc-safer; less spinal compression.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Bowing the low back to chase height — full HIP extension, not spinal; ribs down. Chin/eyes to the ceiling — slight chin tuck, look forward.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">45° back extension</div>
-        <div class="ex-sr">3 × 12–15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Rise only to NEUTRAL (a straight line) — no top hyperextension. Squeeze glutes there, hinge from the hips not the low back. Start bodyweight before loading. Bulletproofs your low back with low load.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=45%20degree%20back%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Glute-focused 45° hyper</b> — same station, glute bias (slight upper-back round, posterior tilt).</div><div class="sub"><b>Cable pull-through</b> — when busy; hip-hinge pattern, low spinal load.</div><div class="sub"><b>Bird dog / light reverse hyper</b> — disc-safer; the pattern without heavy extension.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Cranking into lumbar hyper-extension at the top — stop at neutral, don't arch past it. Adding load too soon — start bodyweight, master a neutral finish, progress slowly.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Suitcase carry</div>
-        <div class="ex-sr">3 × 30 m / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Weight in ONE hand, walk tall without tipping. Anti-tilt core + grip.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=suitcase%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Single-arm DB/kettlebell carry</b> — same thing, whatever load's free.</div><div class="sub"><b>Single-arm farmer's hold (static)</b> — minimal space; isometric anti-side-bend.</div><div class="sub"><b>Side plank</b> — disc-aware regression, same anti-side-bend core (McGill staple).</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Torso bending toward the weighted side — stay perfectly upright, resist the lean. Rounding to set the bell down — hinge from blocks height or squat with a neutral spine.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Pallof press</div>
-        <div class="ex-sr">2–3 × 8–10 / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Anti-rotation core. Stand side-on to a cable, hold the handle at the chest, press straight out and resist the pull twisting you. Slow and controlled — the work is in NOT rotating. Trains the trunk stiffness that protects the disc.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=pallof%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Band Pallof press</b> — busy station / minimal-equipment; anchor a band, same anti-rotation.</div><div class="sub"><b>Half-kneeling Pallof</b> — disc-safer; kills hip/leg cheating, isolates the brace.</div><div class="sub"><b>Side plank</b> — no cable; anti-side-bend trunk staple (McGill).</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Letting the torso rotate or the low back arch — brace, ribs down, resist the twist. Going too heavy and turning it into a press — light load, the spine must stay still.</div>
-      </div>
-    </div><div class="finisher"><span class="fin-label">FINISHER</span> Optional: Backward sled drag × 4–6 lengths. Knee-friendly quad pump. <a class="vid sm" href="https://www.youtube.com/results?search_query=backward%20sled%20drag%20exercise%20how%20to" target="_blank" rel="noopener">▶</a><br><b>Swaps:</b> forward sled drag, reverse incline-treadmill walk (holding rails), or leg-extension burnout. Stay fairly upright, let the legs work — moderate load, keep moving.</div></div>
-    </div><div class="card" style="--c:#C0392B">
-      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ch-left">
-          <span class="tag" style="background:#C0392B">UPPER</span>
-          <div><div class="card-title">Pull Day</div><div class="card-sub">Back & arms — the shirt-off day</div></div>
-        </div>
-        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
-      </div>
-      <div class="card-body"><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Pull-up progression</div>
-        <div class="ex-sr">4 × max</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">See the pull-up plan below. The #1 movement for the frame you want.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=pull%20up%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Assisted machine / band-assisted</b> — when building from 2–3 reps; main progression tool.</div><div class="sub"><b>Lat pulldown (neutral or wide)</b> — when the bar's busy; scalable vertical pull.</div><div class="sub"><b>Ring rows / inverted rows</b> — easier horizontal regression.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Kipping/swinging and half-reps — control full range, dead hang to chin-over. Shrugging up — start each rep by depressing the shoulder blades (pack the lats).</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Chest-supported row</div>
-        <div class="ex-sr">3 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Chest on the pad = zero back strain. Pull elbows back, squeeze shoulder blades.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=chest%20supported%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Machine row (chest pad)</b> — when the bench is taken; same back-safe support.</div><div class="sub"><b>Seated cable row</b> — disc-aware; keep torso still, no jerking.</div><div class="sub"><b>Single-arm DB row (hand on bench)</b> — minimal-equipment; supported, neutral spine.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Heaving with the whole body / using the low back — if you're rocking, lighten it. Pulling with arms only — drive elbows back, squeeze the blades.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Ring row</div>
-        <div class="ex-sr">3 × 10–15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Walk feet forward to make it harder. Great pulling volume.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=ring%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Inverted row on a bar/Smith</b> — when rings are taken; same horizontal pull.</div><div class="sub"><b>Chest-supported / seated cable row</b> — easier to load and keep strict.</div><div class="sub"><b>TRX row</b> — interchangeable suspension option.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Hips sagging / bending at the waist — keep a straight plank line, glutes and core braced. Half-pulling — chest to the rings, elbows back, full squeeze.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Neutral-grip lat pulldown</div>
-        <div class="ex-sr">3 × 10–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Palms facing each other. Pull to your collarbone, control the way up.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=neutral%20grip%20lat%20pulldown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Wide-grip pulldown</b> — when you want more width; neutral is easier on shoulders/elbows.</div><div class="sub"><b>Assisted pull-up</b> — when the cable's busy; builds toward bodyweight.</div><div class="sub"><b>Single-arm cable pulldown</b> — fix imbalances, bigger stretch.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Leaning way back into a row — stay fairly upright (slight lean fine), pull to upper chest. Yanking with momentum — let the lats stretch fully under control.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Face pull / rear-delt fly</div>
-        <div class="ex-sr">3 × 15–20</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Posture fixer + 3D shoulders. High reps, smooth.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=face%20pull%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Reverse pec-deck</b> — when the cable's busy; same rear-delt/upper-back target.</div><div class="sub"><b>Band pull-apart / band face pull</b> — minimal-equipment; great for posture.</div><div class="sub"><b>Bent-over DB rear fly (chest on incline bench)</b> — supported to spare the back.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Too much weight, rowing with the lats — go light, lead with high elbows, pull toward the forehead. Shrugging the traps — shoulders down, "spread the rope."</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">DB or barbell curl</div>
-        <div class="ex-sr">3 × 8–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Your strong point — train it, it shows. No swinging.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=dumbbell%20biceps%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Cable curl</b> — when DBs/bar are taken; constant tension.</div><div class="sub"><b>Incline DB curl</b> — minimal-equipment; bigger biceps stretch.</div><div class="sub"><b>Machine/preacher curl</b> — strict regression, less cheating.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Swinging the torso / using the low back to heave — if you're leaning back, it's too heavy (loads the spine). Elbows drifting forward — pin them at the sides, full range.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Fat-grip hammer curl</div>
-        <div class="ex-sr">2 × 10–12</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Thick grips if you have them. Forearm + grip + arm thickness.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=hammer%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Rope hammer curl on cable</b> — when no fat grips; neutral grip, constant tension.</div><div class="sub"><b>Fat Gripz on DBs / towel-wrapped handle</b> — minimal-equipment fat-grip option.</div><div class="sub"><b>Standard hammer curl</b> — drop the fat grip if grip fatigue limits the work.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Grip fatigue ending the set early — fine for grip, but alternate fat-grip and normal-grip sets if growth's the goal. Swinging to compensate — keep it strict, lighten if needed.</div>
-      </div>
-    </div></div>
-    </div>
 
-<div class="section-label">Pull-up Plan · 2–3 → 10+</div>
-<div class="block">
-  <div class="bhead"><h3>Pull-up Progression</h3><div class="bsub">Hit the target, move up a stage. A few easy reps on off days speeds this up.</div></div>
-  <div class="stage"><div class="stage-t">Stage 1 — now</div><div class="stage-d">Max full reps first (e.g. 3,3,2,2), then finish sets with band/machine assist.</div></div><div class="stage"><div class="stage-t">Stage 2 — negatives</div><div class="stage-d">Jump to the top, lower yourself slowly (3–5s). 4 × 3–4.</div></div><div class="stage"><div class="stage-t">Stage 3 — assisted volume</div><div class="stage-d">Band or machine, full range, 4 × 6–8. Reduce help over time.</div></div><div class="stage"><div class="stage-t">Stage 4 — weighted</div><div class="stage-d">Once you hit ~8 clean reps, add a little weight and keep going.</div></div>
-</div>
-
-<div class="section-label">Recovery Days · ×2 · 15–25 min</div>
-<div class="block">
-  <div class="bhead"><h3>Mobility Flow</h3><div class="bsub">Not a day off — this is the prehab. Do the flow, then a deliberate Zone 2 (nasal-breathing pace) walk 20–40 min.</div></div>
-  <div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Couch stretch</div>
-        <div class="ex-sr">60s / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">The #1 fix for anterior pelvic tilt — lengthens tight hip flexors.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=couch%20stretch%20hip%20flexor%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Half-kneeling hip-flexor stretch</b> — easier if the knee/quad stretch is too intense.</div><div class="sub"><b>Standing hip-flexor lunge stretch</b> — minimal-space option.</div><div class="sub"><b>Kneeling hip-flexor with posterior pelvic tilt</b> — best for APT.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Arching the low back for "more stretch" — tuck the pelvis under, squeeze the glute on the stretched side. Cranking into pain — moderate stretch, not max effort.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">90/90 hip switches</div>
-        <div class="ex-sr">10 / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Rotate between the two positions. Opens up your hips.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=90%2090%20hip%20switch%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Seated 90/90 hold (no switch)</b> — easier; just sit tall in each position.</div><div class="sub"><b>Half-kneeling hip rotations</b> — minimal-space option.</div><div class="sub"><b>Lying windshield wipers (controlled)</b> — floor-based hip rotation.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Rounding the back to get lower — sit tall, let the range come from the hips. Forcing range and bouncing — move slowly, own each position.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Ankle dorsiflexion rocks</div>
-        <div class="ex-sr">12 / side</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Knee over toes toward a wall, heel down. Reclaims the ankle range you're missing.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=ankle%20dorsiflexion%20mobility%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Knee-to-wall dorsiflexion drill</b> — best version; measurable, weight-bearing.</div><div class="sub"><b>Half-kneeling ankle rock</b> — minimal-space; load the front shin over the toes.</div><div class="sub"><b>Banded ankle mobilization</b> — adds joint glide for stubborn ankles.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Heel popping off the floor — keep it DOWN, that's the point of weight-bearing work. Knee caving in — track it over the 2nd/3rd toe.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Dead bug + bird dog</div>
-        <div class="ex-sr">10 / side each</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Slow and controlled. The active half of fixing your tilt.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=dead%20bug%20exercise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Dead bug alone (feet supported)</b> — easier; learn the brace first.</div><div class="sub"><b>Bird dog alone</b> — anti-extension/anti-rotation core (McGill Big 3 staple).</div><div class="sub"><b>Side plank</b> — rounds out the McGill core trio for the disc.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Low back arching off the floor on dead bugs — press it down and brace before the limb moves. Hips/shoulders twisting on bird dogs — move slow, keep the pelvis level.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Bodyweight glute bridge</div>
-        <div class="ex-sr">15</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Squeeze hard at the top. Wakes up the glutes.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=glute%20bridge%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Single-leg glute bridge</b> — harder; more glute, fixes imbalance.</div><div class="sub"><b>Hip thrust (light)</b> — loaded version of the same pattern.</div><div class="sub"><b>Banded glute bridge</b> — adds tension with minimal equipment.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Pushing up by arching the low back — finish in a posterior tilt (ribs down, glutes locked). Feeling it in the hamstrings/back — move feet closer, drive through heels.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Cat-cow + open book</div>
-        <div class="ex-sr">8 each</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Gentle, disc-friendly spine mobility.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=cat%20cow%20open%20book%20stretch%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Cat-cow alone</b> — gentle spinal mobility regression.</div><div class="sub"><b>Open book alone</b> — thoracic rotation focus.</div><div class="sub"><b>Seated thoracic rotations</b> — minimal-space option.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Forcing end-range flexion/extension given the disc — keep cat-cow gentle and pain-free. Rotating from the lumbar on open books — rotate from the upper back, keep hips quiet.</div>
-      </div>
-    </div><div class="ex">
-      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
-        <div class="ex-name">Passive bar hang</div>
-        <div class="ex-sr">2 × 30s</div>
-        <div class="chev">⌄</div>
-      </div>
-      <div class="ex-body">
-        <p class="cue">Just hang. Decompresses the spine, builds grip endurance.</p>
-        <a class="vid" href="https://www.youtube.com/results?search_query=passive%20bar%20hang%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
-        <div class="subs"><span class="lbl">SWAPS</span><div class="sub"><b>Assisted/feet-supported hang</b> — if full bodyweight is too much for grip/shoulders.</div><div class="sub"><b>Towel or fat-grip hang</b> — doubles as grip work.</div><div class="sub"><b>Doorway/rings hang</b> — minimal-equipment option.</div></div>
-        <div class="watch"><span class="lbl warn">WATCH FOR</span> Fully limp with zero shoulder awareness every time — passive is the goal, but mix in a light scapular pack. Overdoing duration early — build hang time gradually.</div>
-      </div>
-    </div>
-</div>
-
-<div class="section-label">Go Deeper</div>
-<div class="card deep" style="--c:#2E75B6">
+<!-- DAY 1 (open) -->
+<div class="card open">
   <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
     <div class="ch-left">
-      <span class="tag" style="background:#2E75B6">PHYSIQUE</span>
-      <div><div class="card-title">Physique Tuning</div><div class="card-sub">The shoulder-to-waist look</div></div>
+      <div class="card-label">DAY 1 · LOWER</div>
+      <div class="card-title">SQUAT / QUAD</div>
+      <div class="card-sub">Quad-biased lower · 40–60 min</div>
     </div>
-    <div class="ch-right"><span class="chev big">⌄</span></div>
+    <div class="ch-right"><span class="time">40–60 MIN</span><span class="chev">⌄</span></div>
   </div>
   <div class="card-body">
-    <p>The look is <b>shoulder-to-waist illusion + density at low body fat</b> — not size. Three levers, in order of impact:</p>
+
+    <div class="va">
+      <div class="blkhead">Block A · Strength</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Pendulum / V-squat</span><span class="ex-sr">5×5</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Stay mid-foot between heels and balls, control the eccentric, hit full depth WITHOUT the pelvis tucking under — the machine's arc keeps the torso supported. Top set 4–6.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Smith heel-elevated squat</b> — busy-station; fixed path, heels up to spare ankle/back.</div>
+            <div class="sub"><b>Heel-elevated goblet squat</b> — minimal-equip; one DB, same quad bias, tall torso.</div>
+            <div class="sub"><b>Leg press</b> — disc-safer; back fully supported, zero axial load.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Low back rounding / pelvic tuck (butt wink) at the bottom</b> — stop depth before it happens; loaded lumbar flexion is the disc risk.</p>
+            <p><b>Knees caving in</b> — track them over the 2nd/3rd toe.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=pendulum%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Leg press (low/narrow, quad bias)</span><span class="ex-sr">3×6–8</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Stop depth before the low back lifts off the pad.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Hack squat machine</b> — when press is busy; similar quad/glute load, back supported.</div>
+            <div class="sub"><b>Heel-elevated goblet squat</b> — minimal-equip; one DB, same quad bias.</div>
+            <div class="sub"><b>Belt squat / single-leg press</b> — disc-safer; unloads the spine entirely.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Lower back rounding and lifting off the pad at the bottom</b> — stop the depth before the pelvis tucks (lumbar flexion under load is the disc risk).</p>
+            <p><b>Locking knees hard at the top</b> — keep a soft knee, don't slam the joint.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=leg%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Bulgarian split squat (DBs)</span><span class="ex-sr">3×6–8 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Torso 25–35° forward, push through the whole foot, heel down.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Walking / reverse lunge</b> — no bench; reverse lunge is easiest on the knee.</div>
+            <div class="sub"><b>Split squat (both feet down)</b> — easier regression, more stable.</div>
+            <div class="sub"><b>Leg press / hack squat</b> — disc-and-balance-safer when fatigued.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Front heel lifting</b> (limited ankle dorsiflexion) — push through the whole foot; step the front foot farther out. Heel-up loads the knee.</p>
+            <p><b>Over-arching the low back into APT</b> — lean the torso 25–35° forward to keep a neutral spine and load the glute.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=bulgarian%20split%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Leg extension</span><span class="ex-sr">3×8–10</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Control the eccentric, brief pause at the top.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Sissy squat (assisted)</b> — machine busy; bodyweight quad isolation.</div>
+            <div class="sub"><b>Heel-elevated goblet squat</b> — compound quad alternative.</div>
+            <div class="sub"><b>Single-leg extension</b> — even out side-to-side; lighter regression.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Yanking with momentum / slamming lockout</b> — control the eccentric, pause briefly at the top.</p>
+            <p><b>Butt sliding off the seat / arching</b> — keep the back pinned to the pad.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=leg%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Seated calf raise</span><span class="ex-sr">3×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Full stretch and squeeze, pause both ends (seated = spine unloaded).</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Leg-press calf press</b> — disc-safer; no axial load on the spine.</div>
+            <div class="sub"><b>Standing calf raise</b> — when seated station is busy.</div>
+            <div class="sub"><b>Single-leg raise off a step</b> — minimal-equip / different gym.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Bouncing through partial ROM</b> — full stretch bottom, full squeeze top, pause both ends.</p>
+            <p><b>For the disc:</b> prefer seated / leg-press calf over heavy standing-loaded versions to keep axial compression off the spine.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=seated%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Sled push</b> — 4×20yd, moderate-heavy. Long spine, drive through the legs.</div></div>
+      <div class="tile"><span class="tl">Core Block · A</span><div class="td"><b>Hollow-body hold</b> 3×20–30s · <b>Pallof press</b> 3×8/side (slow, long holds). Isometric, anti-extension + anti-rotation. See the Core section for cues.</div></div>
+    </div>
+
+    <div class="vb">
+      <div class="blkhead">Block B · Hypertrophy</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Smith heel-elevated squat</span><span class="ex-sr">4×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Heels on plates, tall torso, constant tension, no pause at lockout.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Pendulum / V-squat</b> — when free; supported arc, full depth.</div>
+            <div class="sub"><b>Heel-elevated goblet squat</b> — minimal-equip; one DB, tall torso.</div>
+            <div class="sub"><b>Leg press</b> — disc-safer; back fully supported.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Pelvic tuck / butt wink at depth</b> — heels up should prevent it; if it still happens, raise heels more or cut depth (loaded flexion is the disc risk).</p>
+            <p><b>Knees caving</b> — track over the 2nd/3rd toe.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=smith%20machine%20squat%20heel%20elevated%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Heel-elevated goblet squat</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Ribs stacked, elbows up, controlled.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Leg press</b> — more load without holding a DB.</div>
+            <div class="sub"><b>Hack squat</b> — when grip/upper back is the limiter.</div>
+            <div class="sub"><b>Box squat to a high box</b> — disc-safer; caps depth so the pelvis can't tuck.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Pelvic tuck (butt wink) at the bottom</b> — heel elevation should prevent it; if not, raise heels or cut depth.</p>
+            <p><b>Elbows drifting down, chest collapsing</b> — keep the torso tall, ribs over hips.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=heel%20elevated%20goblet%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Walking / reverse lunge (DBs)</span><span class="ex-sr">3×12 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Reverse lunge if knees cranky, smooth turnaround.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Bulgarian split squat</b> — when you want more unilateral load.</div>
+            <div class="sub"><b>Split squat (both feet down)</b> — easier, more stable regression.</div>
+            <div class="sub"><b>Leg press / hack squat</b> — disc-and-balance-safer when fatigued.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Front heel lifting</b> — push through the whole foot; longer step. Heel-up loads the knee.</p>
+            <p><b>Over-arching the low back into APT</b> — slight forward torso, brace, neutral spine.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=reverse%20lunge%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Leg extension (1.5 reps / slow ecc.)</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Chase the pump, back pinned to the pad.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Sissy squat (assisted)</b> — machine busy; bodyweight quad isolation.</div>
+            <div class="sub"><b>Heel-elevated goblet squat</b> — compound quad alternative.</div>
+            <div class="sub"><b>Single-leg extension</b> — even side-to-side; lighter.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Momentum / slamming lockout</b> — control the eccentric, pause at the top.</p>
+            <p><b>Butt sliding / arching</b> — keep the back pinned to the pad.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=leg%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Standing single-leg calf raise</span><span class="ex-sr">3×15 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Full ROM off a step.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Seated calf raise</b> — biases soleus, spine unloaded.</div>
+            <div class="sub"><b>Leg-press calf press</b> — disc-safer; no axial load.</div>
+            <div class="sub"><b>Bodyweight raise off a step</b> — minimal-equip.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Bouncing through partial ROM</b> — full stretch, full squeeze, pause both ends.</p>
+            <p><b>For the disc:</b> avoid heavy shoulder-loaded standing versions; keep load light single-leg.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=single%20leg%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Backward sled drag</b> — 3×20yd. Upright, knee-friendly quad burn.</div></div>
+      <div class="tile"><span class="tl">Core Block · B</span><div class="td"><b>Hanging knee/leg raise (PPT)</b> 3×10–12 · <b>Side plank</b> 3×30s/side · <b>Ab wheel rollout</b> (kneeling, partial) 2×8. More dynamic, more volume. See the Core section.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DAY 2 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 2 · UPPER</div>
+      <div class="card-title">PUSH</div>
+      <div class="card-sub">Chest · shoulders · triceps · 40–60 min</div>
+    </div>
+    <div class="ch-right"><span class="time">40–60 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+
+    <div class="va">
+      <div class="blkhead">Block A · Strength</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Barbell bench press</span><span class="ex-sr">5×5</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Elbows tucked 45–60°, shoulder blades pinned, small natural arch only. Top set 4–6.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Incline DB press</b> — rack busy; shifts emphasis to upper chest.</div>
+            <div class="sub"><b>Machine chest press / Smith bench</b> — disc-safer; back supported, easy to bail solo.</div>
+            <div class="sub"><b>Flat DB press</b> — minimal-equip; more stretch, easier shoulders.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Elbows flaring to 90°</b> — tuck to ~45–60°, retract/pin the shoulder blades to protect the joint.</p>
+            <p><b>Massive lower-back bridge</b> — a small natural arch is fine, don't let the lumbar overextend; glutes on the bench, feet planted.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20bench%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Seated DB shoulder press (supported)</span><span class="ex-sr">4×6–8</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Ribs down, brace; no lumbar arch to finish. Seated/supported by default.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Machine shoulder press</b> — when DBs busy; fixed path, easy to load.</div>
+            <div class="sub"><b>Landmine press</b> — back-friendly angle, less overhead strain.</div>
+            <div class="sub"><b>Standing DB press</b> — only if back is calm and braced.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Leaning back and arching the lumbar to grind reps</b> — brace, ribs down; if the low back arches to finish, it's too heavy. Default seated/supported for the disc.</p>
+            <p><b>Elbows way forward or flaring hard</b> — slightly in front of the torso, wrists over elbows.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=seated%20dumbbell%20shoulder%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Ring dips</span><span class="ex-sr">3×6–8</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Elbows track back, shoulders packed, don't sink into pain. Add load/assist as needed.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Parallel-bar / machine dips</b> — more stability or rings taken.</div>
+            <div class="sub"><b>Bench/box dips (feet forward)</b> — easier, scalable regression.</div>
+            <div class="sub"><b>Close-grip / decline push-ups</b> — minimal-equip substitute.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Dropping too deep, shoulders rolling forward</b> — keep depth where the shoulder stays stable, don't sink into pain.</p>
+            <p><b>Flaring elbows wide and shrugging</b> — elbows track back, shoulders down/packed.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=ring%20dips%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Cable lateral raise</span><span class="ex-sr">3×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Lead with the elbow, drive width out not up.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>DB lateral raise</b> — cable busy; peak tension at the top.</div>
+            <div class="sub"><b>Lateral-raise machine</b> — fixed path, easy to push near failure.</div>
+            <div class="sub"><b>Lean-away single-arm cable raise</b> — best side-delt stretch.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Swinging/heaving with the traps</b> — go lighter, lead with the elbow, control the lowering.</p>
+            <p><b>Shrugging toward the ear</b> — neck long, drive width out to the side.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=cable%20lateral%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Triceps pushdown</span><span class="ex-sr">3×8–10</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Elbows pinned, only the forearm moves.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Overhead cable/rope extension</b> — station busy; biases the long head.</div>
+            <div class="sub"><b>DB or EZ-bar skull crusher</b> — minimal-equip; keep light to protect elbows.</div>
+            <div class="sub"><b>Ring/bench dips</b> — compound triceps option.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Elbows drifting forward, lats taking over</b> — pin elbows to the sides, only the forearm moves.</p>
+            <p><b>Leaning the torso into it</b> — stay upright, let the triceps drive it.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=triceps%20pushdown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher · Conditioning</span><div class="td"><b>Airbike or sled intervals</b> — 6×20s hard / 60s easy. Crisp, short, leave the back fresh. (The one sled/airbike finisher on an upper day.)</div></div>
+      <div class="tile"><span class="tl">Core Block · A</span><div class="td"><b>Reverse plank</b> 3×20–30s (neutral, glute-driven) · <b>Suitcase carry</b> 3×30m/side (anti-lateral-flexion + grip). See the Core section.</div></div>
+    </div>
+
+    <div class="vb">
+      <div class="blkhead">Block B · Hypertrophy</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Incline DB press (~30°)</span><span class="ex-sr">4×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Slight elbow tuck at the bottom, big stretch.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Incline machine / Smith incline</b> — DBs taken; easier to overload safely.</div>
+            <div class="sub"><b>Flat or low-incline DB press</b> — minimal-equip; same pattern.</div>
+            <div class="sub"><b>Incline cable press</b> — constant tension, joint-friendly.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Bench too steep (&gt;45°)</b> — turns it into a shoulder press; keep it ~30°.</p>
+            <p><b>Elbows flaring wide at the bottom</b> — slight tuck to protect the shoulder.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=incline%20dumbbell%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Machine shoulder press</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Fixed path, push near failure safely.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Seated DB press (supported)</b> — disc-safer; removes standing spinal load.</div>
+            <div class="sub"><b>Landmine press</b> — back-friendly pressing angle.</div>
+            <div class="sub"><b>Cable / Smith overhead</b> — fixed path alternatives.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Arching the lumbar to finish reps</b> — brace, ribs down; the fixed path is no excuse to overextend.</p>
+            <p><b>Elbows flaring hard</b> — keep them slightly in front, wrists stacked.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=machine%20shoulder%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Cable lateral raise (lean-away, 1-arm)</span><span class="ex-sr">4×12–20</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Peak stretch, higher volume — his #1 width driver.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>DB lateral raise</b> — cable busy; peak tension at top.</div>
+            <div class="sub"><b>Lateral-raise machine</b> — fixed path, push near failure.</div>
+            <div class="sub"><b>Two-arm cable raise</b> — when single-arm setup is taken.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Swinging/momentum</b> — go lighter, lead with the elbow, control the lowering.</p>
+            <p><b>Shrugging toward the ear</b> — neck long, drive width out to the side.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=lean%20away%20cable%20lateral%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Ring / parallel-bar dips</span><span class="ex-sr">3×AMRAP-2</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Controlled depth. Leave ~2 reps in the tank.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Machine dips</b> — more stability or rings taken.</div>
+            <div class="sub"><b>Bench/box dips (feet forward)</b> — easier, scalable.</div>
+            <div class="sub"><b>Close-grip / decline push-ups</b> — minimal-equip.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Dropping too deep, shoulders rolling forward</b> — keep depth where the shoulder stays stable.</p>
+            <p><b>Flaring elbows / shrugging</b> — elbows track back, shoulders packed.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=parallel%20bar%20dips%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Overhead cable triceps extension</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Long-head stretch, full range.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Triceps pushdown</b> — when overhead station is busy.</div>
+            <div class="sub"><b>DB or EZ-bar skull crusher</b> — minimal-equip; keep light.</div>
+            <div class="sub"><b>Ring/bench dips</b> — compound triceps option.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Lower-back arch to push overhead</b> — brace, ribs down; stagger stance for stability.</p>
+            <p><b>Elbows flaring out</b> — keep them in, only the forearm moves.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=overhead%20cable%20triceps%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher · Conditioning</span><div class="td"><b>Airbike</b> — 8–10 min steady-hard intervals (e.g. 30s/30s). Fat-loss engine without frying the legs.</div></div>
+      <div class="tile"><span class="tl">Core Block · B</span><div class="td"><b>Pallof press</b> 3×12/side (dynamic) · <b>Suitcase carry</b> 3×40m/side (lighter, longer). See the Core section.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DAY 3 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 3 · ENGINE</div>
+      <div class="card-title">CONDITIONING</div>
+      <div class="card-sub">Same in A &amp; B · spine-and-ankle-friendly · 30–45 min</div>
+    </div>
+    <div class="ch-right"><span class="time">30–45 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div style="padding:8px 2px 4px;font-size:12.5px;color:var(--muted);line-height:1.55">Not block-dependent — runs the same in A and B. Keep it short and crisp so it doesn't tax the lift days.</div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Sled intervals</span><span class="ex-sr">6–8×20yd</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Push/drag, full-ish rest — long spine, moderate load.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Prowler pushes/drags</b> — same stimulus, whatever's available.</div>
+          <div class="sub"><b>Incline treadmill walk-push / bike sprints</b> — when no sled.</div>
+          <div class="sub"><b>Stair intervals</b> — minimal-equip conditioning.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Back rounding on heavy pushes</b> — keep a long spine, moderate the load for intervals.</p>
+          <p><b>Too much volume</b> that wrecks lift-day recovery — keep intervals short and crisp.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=sled%20push%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Heavy bag</span><span class="ex-sr">5–8×60–90s</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Controlled rotation, core braced; favor pace/volume over max-power hooks.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Shadowboxing with light DBs</b> — when no bag; conditioning-focused.</div>
+          <div class="sub"><b>Battle ropes</b> — similar full-body interval, zero spinal load.</div>
+          <div class="sub"><b>Jump rope / fast sled</b> — alternate conditioning modes.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Wild rotational power punches that torque the lumbar</b> — for the disc, keep rotation controlled and core-braced; favor volume/pace over max-power hooks.</p>
+          <p><b>Wrist/hand injury</b> — wrap up, snap punches, don't muscle into the bag.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=heavy%20bag%20workout%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Zone 2 finish</span><span class="ex-sr">15–20 min</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Incline treadmill walk or bike — conversational, ~60–70% max HR.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Incline treadmill walk</b> — disc/joint-safer; same aerobic stimulus.</div>
+          <div class="sub"><b>Bike or elliptical Zone 2</b> — minimal-impact, easy on ankles/back.</div>
+          <div class="sub"><b>Rower at easy pace</b> — full-body Zone 2 (watch lumbar position).</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Drifting too hard out of Zone 2</b> — should be conversational; going harder turns recovery cardio into a stressor.</p>
+          <p><b>Overstriding with weak ankles</b> — shorten the stride or swap to incline walk.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=zone%202%20cardio%20incline%20walk%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Grip add-on — plate pinch carries</span><span class="ex-sr">3×20–30m</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Pinch grip — hold cleanly, stand tall, no shrug.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Two smooth plates pinched per hand</b> — standard; scale by weight/count.</div>
+          <div class="sub"><b>Hub/grip-block pinch hold</b> — no plates; static pinch.</div>
+          <div class="sub"><b>Towel pinch carry</b> — minimal-equip pinch alternative.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Plates slipping then a jerky regrip</b> — pick a weight you can hold cleanly for the full distance.</p>
+          <p><b>Hunching/shrugging under load</b> — stand tall, brace; this trains pinch grip, not your back.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=plate%20pinch%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="tile"><span class="tl">Rotate &amp; benchmark</span><div class="td">Alternate sled ↔ bag week to week so it stays fresh. Every 6–8 weeks, optionally swap this day for the capability benchmark (pull-ups, bench reps, farmer-carry distance, broad jump, sled time).</div></div>
+  </div>
+</div>
+
+<!-- DAY 4 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 4 · LOWER</div>
+      <div class="card-title">HINGE / POSTERIOR</div>
+      <div class="card-sub">Hamstrings · glutes · 40–60 min</div>
+    </div>
+    <div class="ch-right"><span class="time">40–60 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+
+    <div class="va">
+      <div class="blkhead">Block A · Strength</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Trap-bar deadlift from blocks/pins</span><span class="ex-sr">5×5</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Mid-shin start. Brace, hips back, neutral spine, drive the floor away — NEVER from the floor. Top set 4–6.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Trap-bar RDL/deadlift from elevated handles</b> — rack busy; more upright torso, less shear.</div>
+            <div class="sub"><b>Single-leg / B-stance RDL (DBs from a low step)</b> — disc-safer; lighter spinal load.</div>
+            <div class="sub"><b>Lying/seated hamstring curl</b> — back cranky; zero spinal load.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Lifting with the back instead of hinging</b> — push the hips BACK, soft knees, shins vertical. <b>Hard rule: start from pins/blocks at mid-shin, never the floor.</b></p>
+            <p><b>Over-rounding OR over-arching at the bottom</b> — keep a braced neutral spine; stop the range before the back position changes.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=trap%20bar%20deadlift%20from%20blocks%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Hip thrust</span><span class="ex-sr">4×6–8</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Finish in posterior pelvic tilt, ribs down, no lumbar hyperextension at lockout.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Single-leg hip thrust</b> — bench/barbell taken; bodyweight or one DB.</div>
+            <div class="sub"><b>Glute bridge off the floor</b> — minimal-equip, shorter ROM.</div>
+            <div class="sub"><b>Cable pull-through / machine glute drive</b> — disc-safer; less spinal compression.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Hyperextending the low back to chase height</b> — full HIP extension isn't spinal extension; ribs flaring + back bowing means the erectors took over. Finish in a posterior pelvic tilt, ribs down.</p>
+            <p><b>Chin/eyes up to the ceiling</b> — slight chin tuck, look forward/down so the lumbar doesn't over-arch.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=hip%20thrust%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Lying hamstring curl</span><span class="ex-sr">3×8–10</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Hips pinned, control the eccentric.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Seated hamstring curl</b> — whichever machine is open; adds hip-flexed stretch.</div>
+            <div class="sub"><b>Nordic / sliding leg curl</b> — minimal-equip; heavy eccentric.</div>
+            <div class="sub"><b>Single-leg curl</b> — fix side-to-side imbalance.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Hips popping off the pad to cheat</b> — keep hips pinned; if they rise, lighten the load.</p>
+            <p><b>Slamming the weight down</b> — control the eccentric, that's where the growth is.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=lying%20hamstring%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">45° back extension (bodyweight, neutral)</span><span class="ex-sr">3×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Rise only to a straight line, never arch past neutral.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Glute-focused 45° hyper</b> (round upper back slightly, posterior tilt) — glute bias.</div>
+            <div class="sub"><b>Cable pull-through</b> — bench taken; hip-hinge, low spinal load.</div>
+            <div class="sub"><b>Bird dog / light reverse hyper</b> — disc-safer; pattern without heavy extension.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Cranking into lumbar hyper-extension at the top</b> — rise only to a straight line (neutral), don't arch past it; over-extension is a disc/facet irritant.</p>
+            <p><b>Adding heavy load too soon</b> — start bodyweight, master a neutral finish, progress slowly.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=45%20degree%20back%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Standing calf raise (or leg-press calf)</span><span class="ex-sr">3×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Full ROM; prefer leg-press calf to keep axial load off the spine.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Leg-press calf press</b> — disc-safer; no axial load at all.</div>
+            <div class="sub"><b>Seated calf raise</b> — biases soleus, spine unloaded.</div>
+            <div class="sub"><b>Single-leg raise off a step</b> — minimal-equip.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Bouncing through partial ROM</b> — full stretch, full squeeze, pause both ends.</p>
+            <p><b>For the disc:</b> prefer seated / leg-press calf over heavy standing-loaded versions.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=standing%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Heavy farmer's carry</b> (trap-bar or DBs) — 3×30m heavy. Stand tall, brace, support grip.</div></div>
+      <div class="tile"><span class="tl">Core Block · A</span><div class="td"><b>Side plank</b> 3×30–40s/side · <b>Dead bug</b> 3×8/side (anti-extension, low back pressed down). See the Core section.</div></div>
+    </div>
+
+    <div class="vb">
+      <div class="blkhead">Block B · Hypertrophy</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">RDL from pins (mid-shin)</span><span class="ex-sr">4×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Hips back, soft knees, bar drags the legs, stop before the back position changes. Swap: trap-bar RDL from elevated handles.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Trap-bar RDL from elevated handles</b> — rack busy; more upright, less shear.</div>
+            <div class="sub"><b>Single-leg / B-stance RDL (DBs)</b> — disc-safer; lighter spinal load.</div>
+            <div class="sub"><b>Lying/seated hamstring curl</b> — back cranky; zero spinal load.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Lifting with the back instead of hinging</b> — hips BACK, soft knees, bar drags the legs. <b>Hard rule: from pins/blocks at mid-shin, never the floor.</b></p>
+            <p><b>Over-rounding or over-arching at the bottom</b> — braced neutral; stop when hamstrings stretch, before the back position changes.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=rdl%20from%20pins%20romanian%20deadlift%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">B-stance / single-leg hip thrust</span><span class="ex-sr">3×12 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Controlled, glute-driven, no rib flare.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Bilateral hip thrust</b> — when you want more load.</div>
+            <div class="sub"><b>Glute bridge off the floor</b> — minimal-equip, shorter ROM.</div>
+            <div class="sub"><b>Cable pull-through / machine glute drive</b> — disc-safer.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Hyperextending the low back to chase height</b> — finish in posterior pelvic tilt, ribs down; the glute finishes the rep, not the spine.</p>
+            <p><b>Rib flare / eyes up</b> — slight chin tuck, keep the lumbar quiet.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=single%20leg%20hip%20thrust%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Seated hamstring curl</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Hip-flexed stretch, control down.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Lying hamstring curl</b> — whichever machine is open.</div>
+            <div class="sub"><b>Nordic / sliding leg curl</b> — minimal-equip; heavy eccentric.</div>
+            <div class="sub"><b>Single-leg curl</b> — fix imbalance.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Hips popping up to cheat</b> — keep hips pinned; lighten if they rise.</p>
+            <p><b>Slamming the eccentric</b> — control it down, that's the growth.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=seated%20hamstring%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Cable glute kickback</span><span class="ex-sr">3×15 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Move only at the hip, torso still, no low-back arch to throw the leg.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Machine glute kickback / hip extension</b> — cable busy; same isolation.</div>
+            <div class="sub"><b>Banded standing kickback</b> — minimal-equip / different gym.</div>
+            <div class="sub"><b>Quadruped bird-dog hip extension</b> — disc-safer bodyweight version.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Arching the low back to throw the leg higher</b> — the extra range comes from the lumbar, not the glute; torso still, core braced, move only at the hip.</p>
+            <p><b>Rushing with momentum</b> — squeeze the glute at the top, control the return.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=cable%20glute%20kickback%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Single-leg calf raise</span><span class="ex-sr">3×15 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Full stretch, pause top.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Seated calf raise</b> — biases soleus, spine unloaded.</div>
+            <div class="sub"><b>Leg-press calf press</b> — disc-safer; no axial load.</div>
+            <div class="sub"><b>Bodyweight raise off a step</b> — minimal-equip.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Bouncing through partial ROM</b> — full stretch, full squeeze, pause both ends.</p>
+            <p><b>For the disc:</b> avoid heavy shoulder-loaded standing versions.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=single%20leg%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Cable pull-through</b> — 2×15–20. Hip-hinge pump, low spinal load.</div></div>
+      <div class="tile"><span class="tl">Core Block · B</span><div class="td"><b>Hanging leg raise (PPT)</b> 3×10–12 · <b>Reverse plank</b> 3×30s · <b>Ab wheel rollout</b> (kneeling) 3×10. See the Core section.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DAY 5 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 5 · UPPER</div>
+      <div class="card-title">PULL</div>
+      <div class="card-sub">Back · rear delts · biceps · grip · 40–60 min</div>
+    </div>
+    <div class="ch-right"><span class="time">40–60 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+
+    <div class="va">
+      <div class="blkhead">Block A · Strength</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Pull-up (assisted/banded)</span><span class="ex-sr">5×3–5</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Build from 2–3 reps. Full dead-hang to chin-over, pack the lats first, no kipping.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Assisted pull-up machine / band-assisted</b> — the main progression tool.</div>
+            <div class="sub"><b>Lat pulldown (neutral or wide)</b> — bar busy; scalable vertical pull.</div>
+            <div class="sub"><b>Ring rows / inverted rows</b> — easier horizontal regression.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Kipping/swinging and half-reps</b> — control the full range, dead hang to chin-over; partials stall progress.</p>
+            <p><b>Shrugging up to the ears</b> — start each rep by depressing the shoulder blades (pack the lats) before pulling.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=pull%20up%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Chest-supported row</span><span class="ex-sr">4×6–8</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Chest stays on the pad, drive elbows back, squeeze.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Machine row (chest pad)</b> — bench taken; same back-safe support.</div>
+            <div class="sub"><b>Seated cable row</b> — disc-aware; keep torso still, no jerking.</div>
+            <div class="sub"><b>Single-arm DB row (hand on bench)</b> — minimal-equip; supported, neutral spine.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Heaving with the whole body / using the lower back</b> — the chest pad exists so the spine stays neutral; if you're rocking, lighten it.</p>
+            <p><b>Pulling with arms only / not retracting</b> — drive the elbows back, squeeze the shoulder blades.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=chest%20supported%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Neutral-grip lat pulldown</span><span class="ex-sr">3×8–10</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Stay fairly upright, full stretch at top under control.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Wide-grip pulldown</b> — more width emphasis.</div>
+            <div class="sub"><b>Assisted pull-up</b> — cable busy; builds toward bodyweight.</div>
+            <div class="sub"><b>Single-arm cable pulldown</b> — fix imbalances, bigger stretch.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Leaning way back / turning it into a row</b> — stay fairly upright (slight lean fine), pull to the upper chest.</p>
+            <p><b>Yanking with momentum</b> — let the lats stretch fully at the top under control.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=neutral%20grip%20lat%20pulldown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Face pull / rear-delt fly</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Light, elbows high, pull toward eyes, "spread the rope."</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Reverse pec-deck</b> — cable busy; same rear-delt/upper-back target.</div>
+            <div class="sub"><b>Band pull-apart / band face pull</b> — minimal-equip; posture/shoulder health.</div>
+            <div class="sub"><b>Chest-supported DB rear fly</b> — keep it supported to spare the back.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Too much weight / rowing with the lats</b> — go light, lead with the elbows high, pull toward forehead/eyes.</p>
+            <p><b>Shrugging the traps up</b> — keep shoulders down, "spread the rope."</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=face%20pull%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Fat-grip hammer curl</span><span class="ex-sr">3×8–10</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Crush grip, strict, lighten if grip ends the set early.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Rope hammer curl on cable</b> — no fat grips; neutral grip, constant tension.</div>
+            <div class="sub"><b>Fat Gripz on DBs / towel-wrapped handle</b> — minimal-equip fat-grip option.</div>
+            <div class="sub"><b>Standard hammer curl</b> — drop the fat grip if grip limits biceps work.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Grip fatigue ending the set early</b> — partly the point (grip), but if growth is the goal, alternate fat-grip and normal-grip sets.</p>
+            <p><b>Swinging to compensate</b> — keep it strict, lighten if needed.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=fat%20grip%20hammer%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Fat-grip dead hang</b> — 3×max time. Slight scapular pack, build time progressively (support grip).</div></div>
+      <div class="tile"><span class="tl">Core Block · A <span style="color:var(--muted);font-weight:600">(optional 3rd core day)</span></span><div class="td"><b>Pallof press</b> 3×8/side · <b>Hollow-body hold</b> 2×20–30s. See the Core section.</div></div>
+    </div>
+
+    <div class="vb">
+      <div class="blkhead">Block B · Hypertrophy</div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Neutral-grip lat pulldown</span><span class="ex-sr">4×10–12</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Pull to upper chest, control the stretch — more volume to build toward bodyweight pull-ups.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Wide-grip pulldown</b> — more width emphasis.</div>
+            <div class="sub"><b>Assisted pull-up</b> — builds toward bodyweight.</div>
+            <div class="sub"><b>Single-arm cable pulldown</b> — fix imbalances, bigger stretch.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Leaning back into a row</b> — stay fairly upright, pull to the upper chest.</p>
+            <p><b>Yanking / no eccentric control</b> — full stretch at the top under control.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=neutral%20grip%20lat%20pulldown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Ring row</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Straight plank line, chest to rings, full squeeze.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Inverted row on a bar/Smith</b> — rings taken; same horizontal pull.</div>
+            <div class="sub"><b>Chest-supported / seated cable row</b> — easier to load and keep strict.</div>
+            <div class="sub"><b>TRX row</b> — interchangeable suspension option.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Hips sagging / bending at the waist</b> — straight plank line from heels to head, glutes/core braced (protects the low back).</p>
+            <p><b>Half-pulling</b> — chest to the rings, elbows back, full squeeze.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=ring%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Single-arm cable pulldown</span><span class="ex-sr">3×12–15 / side</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Big stretch, fix imbalances.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Neutral-grip pulldown (two-arm)</b> — when single handle taken.</div>
+            <div class="sub"><b>Assisted pull-up</b> — vertical pull, builds toward bodyweight.</div>
+            <div class="sub"><b>Single-arm DB row</b> — supported horizontal alternative.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Twisting the torso to yank</b> — stay square, move at the shoulder/lat.</p>
+            <p><b>Cutting the stretch short</b> — let the lat lengthen fully at the top.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=single%20arm%20cable%20pulldown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Reverse pec-deck (rear delt)</span><span class="ex-sr">3×15–20</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Light, shoulders down, posture work.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Face pull / cable rear-delt</b> — same target, cable-based.</div>
+            <div class="sub"><b>Band pull-apart</b> — minimal-equip; posture/shoulder health.</div>
+            <div class="sub"><b>Chest-supported DB rear fly</b> — supported to spare the back.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Too much weight / rowing with the lats</b> — go light, lead with the elbows, target the rear delts.</p>
+            <p><b>Shrugging the traps</b> — shoulders down, spread wide.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=reverse%20pec%20deck%20rear%20delt%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="ex">
+        <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ex-name">Incline DB curl (+ rope hammer SS)</span><span class="ex-sr">3×12–15</span><span class="chev">⌄</span></div>
+        <div class="ex-body">
+          <div class="cue">Bigger stretch; superset with rope hammer curl 3×15 for the pump.</div>
+          <div class="subs"><span class="lbl">Swaps</span>
+            <div class="sub"><b>Cable curl</b> — DBs taken; constant tension.</div>
+            <div class="sub"><b>Standing DB / bar curl</b> — minimal-equip.</div>
+            <div class="sub"><b>Machine/preacher curl</b> — strict regression, less cheating.</div></div>
+          <div class="watch"><span class="lbl warn">Watch for</span>
+            <p><b>Swinging / using the lower back to heave</b> — stay braced or seated; leaning back loads the spine and means it's too heavy.</p>
+            <p><b>Elbows drifting forward into a partial rep</b> — elbows pinned, full range.</p></div>
+          <a class="vid" href="https://www.youtube.com/results?search_query=incline%20dumbbell%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+        </div>
+      </div>
+      <div class="tile"><span class="tl">Finisher</span><div class="td"><b>Towel-over-bar hang</b> — 3×max time. Grip / decompression.</div></div>
+      <div class="tile"><span class="tl">Core Block · B <span style="color:var(--muted);font-weight:600">(optional)</span></span><div class="td"><b>Ab wheel rollout</b> 2×10 · <b>Side plank</b> 2×40s/side. See the Core section.</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DAY 6 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 6 · RECOVERY</div>
+      <div class="card-title">MOBILITY + ZONE 2 WALK</div>
+      <div class="card-sub">No lifting · ~30–40 min</div>
+    </div>
+    <div class="ch-right"><span class="time">30–40 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div class="stage"><div class="stage-t">Full Daily 5 <span class="badge">5–10 min</span></div><div class="stage-d">Modified curl-up, side plank, bird dog, glute-bridge ISO, couch/half-kneeling hip-flexor stretch. Descending pyramid, endurance not failure. <b>Full cues in the Bulletproof Low Back section below.</b></div></div>
+    <div class="stage"><div class="stage-t">Mobility</div><div class="stage-d">Knee-to-wall ankle dorsiflexion 2×10/side · 90/90 hip switches 2×5/side · couch stretch 2×30–45s/side (posterior tilt) · cat-cow + open book (gentle, pain-free).</div></div>
+    <div class="stage"><div class="stage-t">Zone 2 walk <span class="badge">20–30 min</span></div><div class="stage-d">Brisk/incline, nasal-breathing pace. Real training for fat loss, zero back/ankle risk.</div></div>
+  </div>
+</div>
+
+<!-- DAY 7 -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">DAY 7 · RECOVERY</div>
+      <div class="card-title">MOBILITY + ZONE 2 WALK</div>
+      <div class="card-sub">No lifting · the walk is the point</div>
+    </div>
+    <div class="ch-right"><span class="time">30–40 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div class="stage"><div class="stage-t">Daily 5 (full) + passive bar hang</div><div class="stage-d">Full Daily 5, plus passive bar hang 2–3×max time (decompression, light scapular pack).</div></div>
+    <div class="stage"><div class="stage-t">Mobility</div><div class="stage-d">Repeat the Day 6 set, bias whatever felt tightest in the week (ankle or hip).</div></div>
+    <div class="stage"><div class="stage-t">Zone 2 walk <span class="badge">20–30 min</span></div><div class="stage-d">Optional: easy bag/shadowbox round if you want movement, kept light. Keep it deliberate, not skipped — the mobility is the insurance.</div></div>
+  </div>
+</div>
+
+<!-- =================== REFERENCE =================== -->
+
+<!-- 1. THE PRIMER -->
+<div class="section-label">Reference</div>
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Warm-up</div>
+      <div class="card-title">THE PRIMER</div>
+      <div class="card-sub">Before every lift · ~6 min</div>
+    </div>
+    <div class="ch-right"><span class="time">~6 MIN</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div style="padding:8px 2px 6px;font-size:12.5px;color:var(--muted);line-height:1.55">Targets ankles, hips &amp; pelvic tilt and folds in the Daily 5 pieces. Run it after 2–3 min easy sled/bike to get warm. Includes anti-extension core to prime the brace.</div>
+    <div class="row"><span class="rn">Ankle wall rocks (knee-to-wall)</span><span class="rv">10 / side</span></div>
+    <div class="row"><span class="rn">Couch / half-kneeling hip-flexor stretch</span><span class="rv">30s / side</span></div>
+    <div class="row"><span class="rn">90/90 hip rotations</span><span class="rv">5 / side</span></div>
+    <div class="row"><span class="rn">Dead bug</span><span class="rv">8 / side</span></div>
+    <div class="row"><span class="rn">Glute bridge</span><span class="rv">12</span></div>
+    <div class="row"><span class="rn">Band pull-apart</span><span class="rv">15</span></div>
+  </div>
+</div>
+
+<!-- 2. BULLETPROOF LOW BACK -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Spine</div>
+      <div class="card-title">BULLETPROOF LOW BACK</div>
+      <div class="card-sub">Daily 5 · bracing · progression &amp; red flags</div>
+    </div>
+    <div class="ch-right"><span class="time">MOST DAYS</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body prose">
+    <p>A disc-injured back gets resilient from <b>endurance and control</b>, not a stronger low back. In APT the lumbar erectors are usually <b>tight and overactive</b>, not weak — directly "strengthening the low back" pulls you further into the arch. What bulletproofs it: core endurance + bracing, strong glutes and abs, hip/ankle mobility, and a grooved neutral-spine hinge. <span class="hl">Brace, don't bend.</span></p>
+
+    <h4>The Daily 5 — Big 3 + 2</h4>
+    <p>~5–10 min, any day. Goal is <b>endurance</b>: short holds, smooth breathing, short rests, never grinding to failure. Use a <b>descending pyramid</b> (more sets early, fewer as you fatigue). Build holds and reps over weeks.</p>
+    <div class="stage"><div class="stage-t">1 · Modified curl-up</div><div class="stage-d">One knee bent, other leg straight, hands under the low back to keep the natural arch (do NOT flatten). Lift head/shoulders ~1 inch — barely. <b>The spine does not move</b>, chin tucked. <b>Dose:</b> descending 6→4→2 reps, ~10s each.</div></div>
+    <div class="stage"><div class="stage-t">2 · Side plank (side bridge)</div><div class="stage-d">Forearm under shoulder; knees bent (beginner) or legs straight stacked (advanced). Lift hips to a straight line, brace. <b>No sagging or rotating.</b> <b>Dose:</b> 5→3→1 reps/side, build toward 5×10s/side.</div></div>
+    <div class="stage"><div class="stage-t">3 · Bird dog</div><div class="stage-d">Hands and knees, spine neutral, abs lightly braced. Extend opposite arm + leg to torso level — no higher. <b>Hips/shoulders square — glass of water on the low back can't spill.</b> <b>Dose:</b> 5–10/side, ~10s each.</div></div>
+    <div class="stage"><div class="stage-t">4 · Glute bridge (ISO hold)</div><div class="stage-d">Knees bent, feet flat. Squeeze glutes, drive hips to a straight shoulder-to-knee line — <b>do not arch the low back to get higher</b> (glutes finish the rep). <b>Dose:</b> 3–5×10s, or 2×10 with a 2s squeeze.</div></div>
+    <div class="stage"><div class="stage-t">5 · Couch / half-kneeling hip-flexor stretch</div><div class="stage-d">Half-kneeling, squeeze the down-leg glute and tuck the pelvis under (posterior tilt). <b>The stretch comes from the glute squeeze + tuck, NOT from arching the back.</b> <b>Dose:</b> 2×30–45s/side.</div></div>
+
+    <h4>Bracing</h4>
     <ul>
-      <li><b>Get lean.</b> Diet is ~80% of this aesthetic. The dense, hard look is muscle you already have, made visible at <span class="hl">~12–14% body fat</span>. No training creates it under fat — your fat-loss plan IS the physique plan.</li>
-      <li><b>Build width up top.</b> Wide shoulders + wide lats taper the waist. Push hard on <span class="hl">cable lateral raises</span> (12–20 reps, near failure), <span class="hl">pulldowns + pull-ups</span> for lat width, and upper-back density via face pulls/rows. These build the V more than chest does.</li>
-      <li><b>Density over pump-chasing.</b> Keep compounds (bench, incline, rows, pull-ups) at 5–10 reps; let isolations (laterals, curls, kickbacks) run 12–20. Train close to failure, progress the load.</li>
+      <li><b>360° breath:</b> inhale into belly, sides, and low back — expand all the way around the waistband.</li>
+      <li><b>Brace, then lift:</b> stiffen abs like taking a light punch (~20–30% for daily lifts, harder for max). The brace makes the stiff cylinder that protects the disc. Exhale slowly through the sticking point.</li>
+      <li><b>Hinge cue:</b> hips back, chest leads, spine neutral and locked — the bar moves because the hips move, not the spine.</li>
     </ul>
-    <p>Bias the plan: add a lateral-raise set or two, never skip pull volume, keep the core tight. Don't chase mass-monster — that's the opposite look. Athletic + dense + lean wins. The mirror moves most when the deficit does.</p>
-  </div>
-</div>
-<div class="card deep" style="--c:#C0392B">
-  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-    <div class="ch-left">
-      <span class="tag" style="background:#C0392B">DISC-SAFE</span>
-      <div><div class="card-title">Injury &amp; Mobility</div><div class="card-sub">The disc runs this plan</div></div>
-    </div>
-    <div class="ch-right"><span class="chev big">⌄</span></div>
-  </div>
-  <div class="card-body">
-    <p><b>The disc is the boss.</b> Lumbar flexion under heavy compression is the riskiest position, so the hard rules hold: pin/block hinges (mid-shin start) keep the torso upright and cut spinal shear vs. the floor, and skipping the back squat removes axial compression you don't need. The cue that matters most: <span class="hl">brace, don't bend</span> — set a 360° core brace and move at the HIPS, lumbar neutral, on every hinge/carry/bridge. Endurance and stability beat max strength here (McGill's Big 3 — bird dog, side plank, modified curl-up — are in your recovery flow for exactly this).</p>
-    <p><b>APT:</b> the honest version — you probably can't permanently re-angle the pelvis, and stretching hip flexors alone does little. What helps symptoms is <span class="hl">strengthening glutes + abs while improving hip-flexor length</span>: glute bridges/hip thrusts, dead bugs/bird dogs, and the couch stretch done with a posterior pelvic tilt (tuck or you just stretch the low back). Train control, not a number in a side photo.</p>
-    <p><b>Ankle/hip:</b> weight-bearing drills transfer — <span class="hl">knee-to-wall dorsiflexion</span> and ankle rocks (heel down) beat passive calf stretching; add banded mobilization if the joint is the block. For hips, loaded full-range work (split squats, 90/90) builds usable mobility better than static stretching.</p>
-    <p><b>Do this:</b> a herniated disc warrants <span class="hl">one physio assessment</span> to confirm whether your limit is muscular vs. structural — it changes what's safe to load. Bending isn't forbidden forever, "core" isn't endless crunches (it's bracing/anti-movement), and you don't need to fix a posture number to train hard.</p>
-  </div>
-</div>
-<div class="card deep" style="--c:#27AE60">
-  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
-    <div class="ch-left">
-      <span class="tag" style="background:#27AE60">CONDITIONING</span>
-      <div><div class="card-title">Grip &amp; Conditioning</div><div class="card-sub">Three grips, smart cardio</div></div>
-    </div>
-    <div class="ch-right"><span class="chev big">⌄</span></div>
-  </div>
-  <div class="card-body">
-    <p><b>Grip — the program hits all three types:</b></p>
+
+    <h4>Through the day</h4>
     <ul>
-      <li><b>Crush grip</b> (closing the hand) — fat-grip work, hammer curls.</li>
-      <li><b>Support grip</b> (holding a load) — farmer's and suitcase carries, dead hangs.</li>
-      <li><b>Pinch grip</b> (thumb vs. fingers) — plate pinch carries.</li>
+      <li>Stand ribs-over-pelvis, glutes lightly on; don't hang on one hip.</li>
+      <li>Break up sitting every 30–45 min; chair set so you're not slouched into flexion.</li>
+      <li><b>Morning back hygiene:</b> discs are most swollen the first hour after waking — avoid toe-touches, deep bends, or heavy hinging first thing.</li>
     </ul>
-    <p>Progress them like any lift: add weight or distance/time when the current load is clean. Carries — heavy for short trips (3–4 × 20–30m) for strength, lighter/longer for conditioning. Hangs and pinches — add seconds, then load. Don't grind every grip set to failure early; tendons need a ramp.</p>
-    <p><b>Conditioning for fat loss without frying recovery:</b> keep the hard stuff SHORT and crisp. Sled intervals and heavy bag → short bouts, full-ish rest, quality over volume; they burn calories and spare the joints/spine (sled especially). <span class="hl">Zone 2</span> (incline walk, bike) is the recovery-friendly engine — conversational pace, ~60–70% max HR, as long as you like. Rule of thumb: if conditioning leaves you too beat to progress your lifts, it's too much — pull back the intervals, keep the Zone 2.</p>
+
+    <h4>Stop doing</h4>
+    <ul>
+      <li><b>Loaded spinal flexion</b> — no sit-ups, crunches, Russian twists, or rounding under load (the exact disc-herniation mechanism).</li>
+      <li><b>End-range loaded extension</b> — no heavy back extensions / good mornings cranked into an arch.</li>
+      <li><b>Prolonged slouched sitting</b> and <b>ego-loading the hinge</b> — leave reps in the tank, never let form round.</li>
+    </ul>
+
+    <h4>Progression</h4>
+    <p>Extend <b>hold time</b> first (e.g. side plank 5×5s → 5×8s → 5×10s), then add reps, then advance the variation (knees-down → legs-straight side plank; bridge → single-leg or loaded hip-thrust ISO). Endurance goes up; spinal load does not. <b>Signs it's working:</b> longer pain-free holds, easier neutral hinge, less post-sitting stiffness, fewer flare-ups.</p>
+
+    <div class="flag"><span class="red">Red flags — stop and see a professional:</span> sharp/shooting pain down the leg (sciatica) worsening or past the knee · numbness or pins-and-needles in leg, groin, or saddle area · foot/leg weakness, foot drop, a leg that gives out · <b>any change in bladder or bowel control — emergency (possible cauda equina); go to the ER, don't wait.</b></div>
   </div>
 </div>
 
-<div class="flag"><b>Two non-negotiables:</b> All hinging starts from rack pins/blocks, never the floor. No barbell back squat. Both protect your disc. If anything sends a sharp signal down your back or legs, stop and regress — that's never worth pushing through.<br><br><b>Pain vs injury:</b> a niggle means modify the movement, not cancel the session — only sharp / shooting / numb signals mean stop.</div>
+<!-- 3. CORE -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Trained trunk</div>
+      <div class="card-title">CORE</div>
+      <div class="card-sub">The programmed core block · A/B varies</div>
+    </div>
+    <div class="ch-right"><span class="time">DAYS 1 · 4 (·5)</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div class="prose">
+      <p>The trained-core block lives <b>inside the two lower days (Day 1, Day 4)</b> and optionally one upper day (Day 5). It is distinct from the <b>Daily 5</b> spine-hygiene flow. All movements are disc-safe: anti-extension, anti-rotation, anti-lateral-flexion — <b>never loaded spinal flexion. NO sit-ups, crunches, or Russian twists.</b></p>
+      <p><b>Block A:</b> isometric, lower reps, longer holds — anti-extension (hollow hold, reverse plank, dead bug) and anti-rotation (Pallof) for bracing endurance under tension.<br><b>Block B:</b> more reps, more dynamic — add hanging leg raise and ab-wheel volume, longer/lighter carries, dynamic Pallof.</p>
+    </div>
+
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Pallof press</span><span class="ex-sr">anti-rotation</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Press the handle straight out and resist the cable twisting you — brace, don't rotate.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Band Pallof</b> — minimal-equip.</div>
+          <div class="sub"><b>Banded anti-rotation static hold</b> — busy-station.</div>
+          <div class="sub"><b>Half-kneeling Pallof</b> — disc-safer, locks the pelvis.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Torso rotating toward the stack</b> — defeats the point; go lighter and stay square.</p>
+          <p><b>Holding breath</b> — exhale slow through the hold.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=pallof%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Side plank</span><span class="ex-sr">anti-lat-flexion</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Straight line head-to-feet, hips lifted, brace — don't sag or rotate.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Knees-bent side plank</b> — disc-safer regression.</div>
+          <div class="sub"><b>Suitcase carry</b> — minimal-equip; trains the same anti-side-bend.</div>
+          <div class="sub"><b>Cable side-bend resist</b> — busy-station.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Hips sagging or twisting</b> — lift the hip, stack the shoulders.</p>
+          <p><b>Cranking the neck</b> — keep it long.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=side%20plank%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Dead bug</span><span class="ex-sr">anti-extension</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Low back pressed gently into the floor, brace, then move the opposite arm/leg slow.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Dead bug feet-supported</b> — regression.</div>
+          <div class="sub"><b>Bird dog</b> — minimal-equip; same anti-extension/rotation.</div>
+          <div class="sub"><b>Pallof</b> — busy-station anti-rotation alt.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Low back arching off the floor as the limb lowers</b> — shorten the reach, re-brace.</p>
+          <p><b>Speeding up</b> — slow and controlled is the skill.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=dead%20bug%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Hollow-body hold</span><span class="ex-sr">anti-extension</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Low back glued to the floor, ribs down, extend the limbs only as far as you can keep it flat.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Tuck hold</b> (knees in) — regression, shortest lever.</div>
+          <div class="sub"><b>Dead bug</b> — disc-safer alt; dynamic version of the same skill.</div>
+          <div class="sub"><b>Bench leg-lower hold</b> — busy-station, supported.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Low back peeling off the floor</b> — the spine-protection failure point; bend the knees or raise the arms until it stays flat.</p>
+          <p><b>Holding the breath</b> — breathe shallow and steady.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=hollow%20body%20hold%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Reverse plank</span><span class="ex-sr">glute/posture iso</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Hips up to a straight shoulder-to-heel line, glutes ON, ribs down — a moderate <b>neutral</b> glute/posture isometric, NOT an end-range arch. Glute-driven, ribs down, don't crank the low back.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Tabletop reverse plank</b> (knees bent) — disc-safer regression, shorter lever.</div>
+          <div class="sub"><b>Glute bridge ISO</b> — minimal-equip; same posterior iso, spine supported.</div>
+          <div class="sub"><b>Bench-supported reverse plank</b> — busy/minimal; reduces the demand.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Sagging into a deep lumbar arch</b> — keep it neutral and glute-driven. <b>Flag and skip entirely if there's any acute low-back pain</b> — for a disc this is the one core move to drop first if symptoms flare.</p>
+          <p><b>Shoulders shrugging up to the ears</b> — pack the shoulders down.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=reverse%20plank%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Hanging leg raise (PPT)</span><span class="ex-sr">anti-ext · dynamic</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Tuck the pelvis under (posterior pelvic tilt) FIRST, then raise — initiate from the abs, never let the low back arch at the bottom.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Hanging knee raise</b> — disc-safer regression; easier to control the tuck.</div>
+          <div class="sub"><b>Captain's chair / lying leg raise (neutral spine)</b> — disc-safer; back supported.</div>
+          <div class="sub"><b>Lying leg raise (floor)</b> — minimal-equip; hands under hips, low back down.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>A low-back arch at the bottom</b> — the abs can't hold the tuck; regress to knee raises (if you can't avoid the arch, it's too advanced).</p>
+          <p><b>Swinging / momentum</b> — control both directions; straight-leg compresses the spine more, so progress gradually.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=hanging%20leg%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Ab wheel rollout</span><span class="ex-sr">advanced anti-ext</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Kneeling, partial range first — ribs down, brace hard, never let the low back arch as you roll out.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Kneeling partial-range / towel-under-wheel</b> — regression; caps the range.</div>
+          <div class="sub"><b>Dead bug</b> — minimal-equip; same anti-extension demand, no wheel.</div>
+          <div class="sub"><b>Anti-extension plank (long-lever)</b> — busy; static version.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Low back arching / hips dropping at full reach</b> — that IS the disc-danger position; cut the range immediately, only extend once neutral is rock-solid.</p>
+          <p><b>Rolling out faster than you can pull back</b> — control both directions.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=ab%20wheel%20rollout%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Suitcase carry</span><span class="ex-sr">anti-lat-flexion + grip</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Single-arm load, stay perfectly upright — the point is resisting the lean toward the weighted side.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Single-arm DB/KB carry</b> — same thing, whatever's free.</div>
+          <div class="sub"><b>Single-arm farmer's hold (static)</b> — minimal space; isometric anti-lateral-flexion.</div>
+          <div class="sub"><b>Side plank</b> — disc-aware regression, same anti-side-bend.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Torso bending toward the weighted side</b> — stay upright; resist the lean (anti-lateral-flexion + grip).</p>
+          <p><b>Rounding to set the bell down</b> — hinge from pins/blocks height or squat with a neutral spine.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=suitcase%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. MOBILITY & RECOVERY -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Recovery</div>
+      <div class="card-title">MOBILITY &amp; RECOVERY</div>
+      <div class="card-sub">Hip · ankle · spine · decompression</div>
+    </div>
+    <div class="ch-right"><span class="time">DAYS 6 · 7</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Knee-to-wall ankle dorsiflexion</span><span class="ex-sr">2×10 / side</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Weight-bearing dorsiflexion — the kind that transfers. Load the front shin over the toes.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Half-kneeling ankle rock</b> — minimal-space.</div>
+          <div class="sub"><b>Banded ankle mobilization</b> — adds joint glide for stubborn ankles.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Heel popping off the floor</b> — keep the heel DOWN; that's the whole point.</p>
+          <p><b>Knee caving inward</b> — track over the 2nd/3rd toe.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=knee%20to%20wall%20ankle%20dorsiflexion%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">90/90 hip switches</span><span class="ex-sr">2×5 / side</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Sit tall, hinge from the hips, own each position.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Seated 90/90 hold (no switch)</b> — easier regression.</div>
+          <div class="sub"><b>Half-kneeling hip rotations</b> — minimal-space.</div>
+          <div class="sub"><b>Lying windshield wipers (controlled)</b> — floor-based.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Rounding the back to get lower</b> — sit tall; range comes from the hips, not lumbar flexion.</p>
+          <p><b>Forcing range / bouncing</b> — move slowly, own each position.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=90%2090%20hip%20switches%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Couch stretch (posterior tilt)</span><span class="ex-sr">2×30–45s / side</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Tuck the pelvis under (posterior tilt) and squeeze the glute — best for APT.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Half-kneeling hip-flexor stretch</b> — easier regression.</div>
+          <div class="sub"><b>Standing hip-flexor lunge stretch</b> — minimal-space.</div>
+          <div class="sub"><b>Kneeling hip-flexor with PPT</b> — best for APT.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Arching the low back to feel "more stretch"</b> — that's the lumbar moving, not the hip flexor; tuck the pelvis and squeeze the glute.</p>
+          <p><b>Cranking into pain</b> — a moderate stretch, not max effort.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=couch%20stretch%20exercise%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Cat-cow + open book</span><span class="ex-sr">gentle</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Gentle, pain-free spinal mobility + thoracic rotation.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Cat-cow alone</b> — gentle spinal mobility.</div>
+          <div class="sub"><b>Open book alone</b> — thoracic rotation focus.</div>
+          <div class="sub"><b>Seated thoracic rotations</b> — minimal-space.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Forcing aggressive end-range flexion/extension</b> given the disc — keep cat-cow gentle and pain-free; this is mobility, not a stretch to push into.</p>
+          <p><b>Rotating from the lumbar on open books</b> — rotate from the upper back (thoracic), keep the low back quiet.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=cat%20cow%20open%20book%20mobility%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="ex-name">Passive bar hang</span><span class="ex-sr">2–3×max time</span><span class="chev">⌄</span></div>
+      <div class="ex-body">
+        <div class="cue">Decompression; mix in a light scapular pack for shoulder health.</div>
+        <div class="subs"><span class="lbl">Swaps</span>
+          <div class="sub"><b>Assisted/feet-supported hang</b> — regression if full bodyweight is too much.</div>
+          <div class="sub"><b>Towel or fat-grip hang</b> — doubles as grip work.</div>
+          <div class="sub"><b>Doorway/rings hang</b> — minimal-equip.</div></div>
+        <div class="watch"><span class="lbl warn">Watch for</span>
+          <p><b>Hanging fully limp every time</b> — passive is fine for decompression, but mix in a light scapular pack.</p>
+          <p><b>Overdoing duration early</b> — build hang time gradually.</p></div>
+        <a class="vid" href="https://www.youtube.com/results?search_query=passive%20bar%20hang%20decompression%20how%20to" target="_blank" rel="noopener">▶ Video</a>
+      </div>
+    </div>
+    <div class="tile"><span class="tl">Zone 2 walk</span><div class="td">20–30 min brisk/incline, nasal-breathing pace. The recovery-friendly fat-loss engine — conversational, ~60–70% max HR, zero back/ankle risk. <b>The walk is the point.</b></div></div>
+  </div>
+</div>
+
+<!-- 5. PULL-UP PLAN -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Skill</div>
+      <div class="card-title">PULL-UP PLAN</div>
+      <div class="card-sub">Build from 2–3 reps to clean bodyweight</div>
+    </div>
+    <div class="ch-right"><span class="time">DAY 5</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body">
+    <div class="stage"><div class="stage-t">1 · Build the pull</div><div class="stage-d">Block A: weighted/assisted pull-ups 5×3–5 (full dead-hang to chin-over). Block B: heavier lat-pulldown volume 4×10–12 + ring rows to grow the horizontal and vertical pull together.</div></div>
+    <div class="stage"><div class="stage-t">2 · The progression tool</div><div class="stage-d"><b>Assisted pull-up machine / band-assisted</b> is the main driver — reduce assistance over weeks. Ring/inverted rows are the easier horizontal regression that still builds the pull.</div></div>
+    <div class="stage"><div class="stage-t">3 · Own the rep</div><div class="stage-d">No kipping or half-reps — control the full range, dead hang to chin-over. Start each rep by depressing the shoulder blades (pack the lats) before pulling; partials stall progress.</div></div>
+    <div class="stage"><div class="stage-t">4 · Grip carries over</div><div class="stage-d">Fat-grip and towel hangs (the Day 5 finishers) build the support grip that often limits the pull-up. Build hang time progressively.</div></div>
+    <a class="vid" href="https://www.youtube.com/results?search_query=pull%20up%20progression%20beginner%20how%20to" target="_blank" rel="noopener" style="margin-top:12px">▶ Video</a>
+  </div>
+</div>
+
+<!-- 6. GO DEEPER -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Deep dive</div>
+      <div class="card-title">GO DEEPER</div>
+      <div class="card-sub">Physique · injury · grip · GBRS</div>
+    </div>
+    <div class="ch-right"><span class="time">OPTIONAL</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body prose">
+    <h4>Physique tuning</h4>
+    <p>The dense, athletic look is <b>shoulder-to-waist illusion + density at low body fat</b> — not size. Three levers, in order:</p>
+    <ul>
+      <li><b>Get lean.</b> Diet is ~80% of this aesthetic. The "dense, hard" look is muscle you already have, made visible at ~12–14% body fat. Your fat-loss plan IS the physique plan — protein high, deficit steady.</li>
+      <li><b>Build width up top.</b> Wide shoulders + lats taper the waist. Push HARD on <span class="hl">cable lateral raises</span> (12–20 reps, near failure, the bulk of shoulder volume), <span class="hl">lat pulldown + pull-ups</span> (lat width), and upper-back density via face pulls/rows. These create the V more than chest.</li>
+      <li><b>Density over pump-chasing.</b> Keep compounds 5–10 reps for dense muscle; let isolations run 12–20. Train close to failure, progress the load. Don't chase a mass-monster — athletic + dense + lean wins.</li>
+    </ul>
+
+    <h4>Injury &amp; mobility</h4>
+    <p><b>The disc is the boss of this plan.</b> Lumbar flexion under heavy compression is the riskiest position — so pin/block hinges (mid-shin start) keep the torso upright and cut shear, and skipping the back squat removes axial compression you don't need. <span class="hl">Brace, don't bend</span> — 360° brace, move at the HIPS, lumbar neutral, every hinge/carry/bridge. Endurance and stability beat max strength for keeping the back happy.</p>
+    <p><b>APT, honest version:</b> you probably can't permanently re-angle the pelvis, and stretching hip flexors alone does little. What helps symptoms is <b>strengthening glutes + abs and improving hip-flexor length together</b> — bridges/thrusts, dead bugs/bird dogs, couch stretch with a posterior tilt. Train control, not a number in a side photo.</p>
+    <p><b>Ankle/hip:</b> weight-bearing drills transfer — knee-to-wall dorsiflexion and ankle rocks (heel down) beat passive calf stretching; add banded mobilization if the joint, not the muscle, is the block. For hips, loaded full-range work (split squats, 90/90) builds usable mobility better than static stretching.</p>
+
+    <h4>Grip &amp; conditioning</h4>
+    <p>The program hits all three grip types: <b>crush</b> (fat-grip work, hammer curls), <b>support</b> (farmer's/suitcase carries, dead hangs), <b>pinch</b> (plate pinch carries). Progress like any lift — add weight or distance/time when clean. Carries: heavy for short trips (3–4×20–30m) for strength, lighter/longer for conditioning. Don't grind every grip set to failure; tendons need a ramp.</p>
+    <p><b>Conditioning for fat loss without frying recovery:</b> keep the hard stuff SHORT and crisp. Sled and heavy bag → short bouts, full-ish rest, quality over volume; they spare the joints/spine. <span class="hl">Zone 2</span> (incline walk, bike) is the recovery-friendly engine — conversational, ~60–70% max HR. If conditioning leaves you too beat to progress your lifts, it's too much.</p>
+
+    <h4>GBRS — what's worth stealing</h4>
+    <p>GBRS Performance (Vernon Griffith II + DEVGRU vets) trains for <b>durability and longevity, not peaking</b>. Their own staples already dodge the two movements your disc can't tolerate. What's ported into this plan:</p>
+    <ul>
+      <li><b>Loaded carry as the trunk/grip pillar</b> — suitcase/front-rack carries replace dedicated core/grip work; anti-lateral-flexion + grip, no spinal loading. Their #1 transferable idea.</li>
+      <li><b>Conditioning as an end-of-session finisher</b>, never the main event — sled/airbike, not running, to spare the back/ankle.</li>
+      <li><b>Trap-bar deadlift from blocks</b> as the primary hinge — their signature pull, the most spine-neutral barbell hinge available.</li>
+      <li><b>Belt squat + Bulgarian split squat as the leg engine</b> — zero spinal compression, mirrors GBRS leg day (they don't back squat either).</li>
+      <li><b>Mobility harvested INTO the lift</b>, not bolted before it — the 3–4 highest-value drills (loaded ankle DF, 90/90, T-spine) live in the primer + rest periods, killing the 30-min mobility tax that made the old plan get quit.</li>
+      <li><b>Pain-vs-injury + train-around mindset</b> and <b>Zone 2 walking</b> as the recovery default — Shipley's literal #1 recommendation.</li>
+    </ul>
+    <p><b>Skipped on purpose:</b> the standalone 30-min pre-lift mobility block, floor barbell deadlifts / any back squat, long rucks / loaded run volume, and the full 5-day split. Ideas ported, structure kept to your 4-lift + 1-conditioning + 2-recovery week.</p>
+  </div>
+</div>
+
+<!-- 7. RULES & PROGRESSION -->
+<div class="card">
+  <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+    <div class="ch-left">
+      <div class="card-label">Reference · Operating rules</div>
+      <div class="card-title">RULES &amp; PROGRESSION</div>
+      <div class="card-sub">Pain vs injury · deload · the physio note</div>
+    </div>
+    <div class="ch-right"><span class="time">READ ME</span><span class="chev">⌄</span></div>
+  </div>
+  <div class="card-body prose">
+    <div class="flag"><b>Two non-negotiables:</b> all hinging starts from rack pins/blocks at mid-shin, never the floor. No barbell back squat. No loaded spinal flexion, no end-range loaded extension. Both protect your disc.</div>
+
+    <h4>Pain vs injury</h4>
+    <p>A niggle means <b>modify the movement, not cancel the session</b> — only sharp, shooting, or numb signals mean stop. Learn the difference so you train around the small stuff instead of stopping for six months. If anything sends a sharp signal down your back or legs, stop and regress — never worth pushing through.</p>
+
+    <h4>Progress within a block, jump between blocks</h4>
+    <ul>
+      <li><b>Week 1</b> establishes working loads. <b>Week 2</b> adds one rep per set OR a small load bump at the same reps (double-progression).</li>
+      <li>When Block A comes back around, start <b>heavier than the last A</b>.</li>
+      <li>Leave <b>1–2 reps in the tank</b> on every working set — never grind form into flexion.</li>
+      <li>Track waist + photos over the scale — holding strength while leaning out = winning.</li>
+    </ul>
+
+    <h4>Deload</h4>
+    <p>Every <b>8 weeks</b> (after 2 full A/B cycles): one easier week — keep the lifts, cut sets ~40%, drop load ~10%, keep movement quality high. Conditioning stays Zone 2 only that week.</p>
+
+    <h4>The one physio visit</h4>
+    <p>A confirmed herniated disc is worth <span class="hl">one physio/PT assessment</span> to confirm it's muscular and manageable vs. structural needing tailored care — and to check your directional preference. Not alarmist: one visit gives you a green light and a baseline. Most disc herniations improve with exactly this kind of loading-smart, endurance-based program. Bust the myths: bending isn't forbidden forever, "core" isn't endless crunches (it's bracing/anti-movement), and you don't need to fix a posture number to train hard.</p>
+  </div>
+</div>
 
 <div class="foot">
   <b>Progress:</b> add a rep or a little weight each session · keep 1–2 reps in the tank on main lifts.<br>
   <b>Track:</b> waist + photos beat the scale · holding strength while leaning out = winning.<br>
-  <b>Deload</b> every 6–8 weeks (half the sets, keep it light).<br><br>
-  Worth one physio session to confirm your pelvic tilt is muscular (this plan fixes it) vs structural.
+  <b>Deload</b> every 8 weeks (cut sets ~40%, drop load ~10%, keep quality).
 </div>
+
 </div>
 <script>
 (function(){
-  // Toggle is handled by inline onclick on each header. Previously the page ALSO
-  // bound click listeners here AND force-opened everything — the double toggle
-  // cancelled every tap, leaving one giant always-open list. Single mechanism now.
-  // Start collapsed (clean tappable menu); open the first day so it's obviously interactive.
-  var first=document.querySelector('.card');
-  if(first){first.classList.add('open');}
+  // Collapse is handled by inline onclick on each header (single mechanism — do NOT
+  // add JS click-listeners to headers; that caused a double-toggle bug). Here we ONLY
+  // wire the two A/B toggle buttons, which is safe (a dedicated button handler).
+  var body=document.body, btnA=document.getElementById('btnA'),
+      btnB=document.getElementById('btnB'), label=document.getElementById('curlabel');
+  function setBlock(b){
+    if(b==='b'){ body.classList.remove('block-a'); body.classList.add('block-b');
+      btnB.classList.add('active'); btnA.classList.remove('active');
+      label.textContent='B · Hypertrophy · Weeks 3–4'; }
+    else { body.classList.remove('block-b'); body.classList.add('block-a');
+      btnA.classList.add('active'); btnB.classList.remove('active');
+      label.textContent='A · Strength · Weeks 1–2'; }
+    try{ localStorage.setItem('bp-block', b); }catch(e){}
+  }
+  btnA.addEventListener('click', function(){ setBlock('a'); });
+  btnB.addEventListener('click', function(){ setBlock('b'); });
+  // Restore saved choice (default A; never let storage break the page).
+  try{ var saved=localStorage.getItem('bp-block'); if(saved==='b'){ setBlock('b'); } }catch(e){}
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW reg failed',e);});});}</script>
