@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bulletproof</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bulletproof">
+<meta name="theme-color" content="#0e1217">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style id="appfix"></style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  background:#0e1217;color:#e8edf2;line-height:1.45;padding:0 0 60px}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+header{padding:26px 0 18px;text-align:center}
+header h1{font-size:25px;font-weight:800;letter-spacing:-.4px}
+header p{font-size:13px;color:#8a97a6;margin-top:5px}
+.legend{font-size:11.5px;color:#6f7c8b;text-align:center;margin:10px 0 4px}
+
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:#6f7c8b;
+  margin:22px 4px 8px;text-transform:uppercase}
+
+/* primer */
+.primer{background:#161c24;border:1px solid #232c38;border-radius:14px;padding:14px 16px;margin-bottom:6px}
+.primer h3{font-size:14px;margin-bottom:3px}
+.primer .note{font-size:12px;color:#8a97a6;margin-bottom:10px}
+.prim{display:flex;justify-content:space-between;font-size:13.5px;padding:6px 0;border-bottom:1px solid #1e2630}
+.prim:last-child{border:0} .prim b{color:#9fc6ee}
+
+/* day cards */
+.card{background:#161c24;border:1px solid #232c38;border-radius:16px;margin-bottom:11px;overflow:hidden}
+.card-head{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;cursor:pointer}
+.ch-left{display:flex;align-items:center;gap:12px}
+.tag{font-size:9.5px;font-weight:800;letter-spacing:.8px;color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap}
+.card-title{font-size:17px;font-weight:700}
+.card-sub{font-size:12px;color:#8a97a6;margin-top:1px}
+.ch-right{display:flex;align-items:center;gap:10px}
+.time{font-size:11.5px;color:#6f7c8b;white-space:nowrap}
+.chev{color:#6f7c8b;transition:transform .2s;font-size:16px}
+.chev.big{font-size:20px}
+.card.open .chev.big{transform:rotate(180deg)}
+.card-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.card.open .card-body{max-height:3000px}
+.card-body{padding:0 12px} .card.open .card-body{padding:0 12px 12px}
+
+/* exercise rows */
+.ex{border-top:1px solid #1e2630}
+.ex-head{display:flex;align-items:center;gap:10px;padding:12px 4px;cursor:pointer}
+.ex-name{flex:1;font-size:14.5px;font-weight:600}
+.ex-sr{font-size:13px;color:#9fc6ee;font-weight:600;white-space:nowrap}
+.chev{flex-shrink:0}
+.ex.open .chev{transform:rotate(180deg)}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.ex.open .ex-body{max-height:400px;padding-bottom:12px}
+.cue{font-size:13px;color:#b8c4d0;padding:0 4px 9px}
+.vid{display:inline-block;font-size:12.5px;font-weight:600;color:#fff;background:#c0392b;
+  padding:7px 13px;border-radius:8px;text-decoration:none;margin-left:4px}
+.vid.sm{padding:3px 9px;margin-left:6px;font-size:12px}
+
+.finisher{margin-top:12px;padding:11px 13px;background:#11201a;border:1px solid #1f3a2d;
+  border-radius:10px;font-size:12.5px;color:#bfe0cd}
+.fin-label{font-size:9.5px;font-weight:800;letter-spacing:.8px;color:#27AE60;display:block;margin-bottom:3px}
+
+/* recovery + pullup share card look */
+.block{background:#161c24;border:1px solid #232c38;border-radius:16px;padding:6px 12px 12px;margin-bottom:11px}
+.block .bhead{padding:13px 4px 4px} .block h3{font-size:16px;font-weight:700}
+.block .bsub{font-size:12px;color:#8a97a6;margin-top:2px}
+.stage{border-top:1px solid #1e2630;padding:11px 4px}
+.stage-t{font-size:14px;font-weight:700;color:#9fc6ee}
+.stage-d{font-size:13px;color:#b8c4d0;margin-top:2px}
+
+.foot{font-size:12px;color:#6f7c8b;text-align:center;margin-top:22px;padding:0 10px;line-height:1.6}
+.foot b{color:#9aa7b5}
+.flag{background:#1d1410;border:1px solid #3a2a1c;border-radius:12px;padding:13px 15px;
+  font-size:12.5px;color:#d9c3a8;margin-bottom:11px}
+.flag b{color:#e8b87a}
+</style></head>
+<body><div class="wrap">
+<header>
+  <h1>The Bulletproof Athlete</h1>
+  <p>Lean · capable · built to do anything</p>
+  <div class="legend">Tap any day to open · tap an exercise for how-to + video</div>
+</header>
+
+<div class="section-label">Before every lift · 6 min</div>
+<div class="primer">
+  <h3>The Primer</h3>
+  <p class="note">Targets your ankles, hips & pelvic tilt. Do it after 2–3 min easy sled/bike to get warm.</p>
+  <div class="prim"><span>Ankle wall rocks</span><b>10 / side</b></div><div class="prim"><span>Couch stretch</span><b>30s / side</b></div><div class="prim"><span>90/90 hip rotations</span><b>5 / side</b></div><div class="prim"><span>Dead bug</span><b>8 / side</b></div><div class="prim"><span>Glute bridge</span><b>12</b></div><div class="prim"><span>Band pull-apart</span><b>15</b></div>
+</div>
+
+<div class="section-label">The Week</div>
+<div class="card" style="--c:#2E75B6">
+      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ch-left">
+          <span class="tag" style="background:#2E75B6">LOWER</span>
+          <div><div class="card-title">Squat Day</div><div class="card-sub">Quad-focused, back-safe</div></div>
+        </div>
+        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
+      </div>
+      <div class="card-body"><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Leg press</div>
+        <div class="ex-sr">4 × 8–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Your strength — load it heavy. Feet mid-platform, control the way down, don't let your low back round off the pad.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20leg%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Heel-elevated goblet squat</div>
+        <div class="ex-sr">3 × 10–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Heels on a plate (helps your ankles). Stay upright, knees travel over toes, sink as deep as you can.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=heel%20elevated%20goblet%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Hip thrust</div>
+        <div class="ex-sr">3 × 10–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Shoulders on bench, drive through heels, squeeze glutes hard at the top. Builds the glutes that fix your tilt.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20hip%20thrust%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Leg extension</div>
+        <div class="ex-sr">3 × 12–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Quad finisher — go close to failure and chase the burn. You're strong here.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=leg%20extension%20machine%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Standing calf raise</div>
+        <div class="ex-sr">3 × 12–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Full stretch at the bottom, pause at the top. Builds ankle/lower-leg durability for running.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=standing%20calf%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Heavy farmer's carry</div>
+        <div class="ex-sr">3 × 30–40 m</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Pick up heavy DBs/handles, walk tall, brace your core. Grip + traps + anti-tilt in one.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=farmers%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="finisher"><span class="fin-label">FINISHER</span> Optional: Sled push × 4–6 lengths, heavy. No soreness penalty, all engine. <a class="vid sm" href="https://www.youtube.com/results?search_query=sled%20push%20exercise%20how%20to" target="_blank" rel="noopener">▶</a></div></div>
+    </div><div class="card" style="--c:#C0392B">
+      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ch-left">
+          <span class="tag" style="background:#C0392B">UPPER</span>
+          <div><div class="card-title">Push Day</div><div class="card-sub">Chest, shoulders, triceps</div></div>
+        </div>
+        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
+      </div>
+      <div class="card-body"><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Barbell bench press</div>
+        <div class="ex-sr">4 × 5–8</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Your strength builder. Leave 1 rep in the tank on the last set. Add reps, then add weight.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=barbell%20bench%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Incline DB press</div>
+        <div class="ex-sr">3 × 8–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Upper chest = the broad look. Get a full stretch at the bottom of each rep.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=incline%20dumbbell%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Standing DB shoulder press</div>
+        <div class="ex-sr">3 × 8–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Standing makes your core work too. Press overhead, don't lean back.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=standing%20dumbbell%20shoulder%20press%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Ring dips</div>
+        <div class="ex-sr">3 × 6–10</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Use foot assistance to scale. Brutal triceps + chest. Machine dip is a fine sub.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=ring%20dips%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Cable lateral raise</div>
+        <div class="ex-sr">3 × 12–20</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Shoulder width — the biggest driver of the V-taper. Lead with the elbow.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=cable%20lateral%20raise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Triceps pushdown</div>
+        <div class="ex-sr">3 × 12–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Arm size. Keep elbows pinned to your sides.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=triceps%20pushdown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Fat-grip dead hang</div>
+        <div class="ex-sr">3 × max time</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Hang from a thick bar/grips as long as you can. Grip work + spinal decompression for your back.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=dead%20hang%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div></div>
+    </div><div class="card" style="--c:#27AE60">
+      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ch-left">
+          <span class="tag" style="background:#27AE60">CONDITIONING</span>
+          <div><div class="card-title">Playground Day</div><div class="card-sub">Pick one — rotate weekly</div></div>
+        </div>
+        <div class="ch-right"><span class="time">30–40 min</span><span class="chev big">⌄</span></div>
+      </div>
+      <div class="card-body"><div class="ex">
+              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+                <div class="ex-name">Sled intervals</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
+              </div>
+              <div class="ex-body"><p class="cue">10 min easy to warm up, then 8–10 rounds: hard 20–30 m push, walk back to recover. Slow 5-min drag to finish.</p>
+              <a class="vid" href="https://www.youtube.com/results?search_query=sled%20push%20intervals%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a></div>
+            </div><div class="ex">
+              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+                <div class="ex-name">Heavy bag</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
+              </div>
+              <div class="ex-body"><p class="cue">6–8 rounds of 2–3 min (punches, knees, movement), 60s rest. Stress relief + engine.</p>
+              <a class="vid" href="https://www.youtube.com/results?search_query=heavy%20bag%20workout%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a></div>
+            </div><div class="ex">
+              <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+                <div class="ex-name">Zone 2 run</div><div class="ex-sr">pick</div><div class="chev">⌄</div>
+              </div>
+              <div class="ex-body"><p class="cue">20–30 min easy jog you can hold a conversation through. Build toward 35–40 min over time.</p>
+              <a class="vid" href="https://www.youtube.com/results?search_query=zone%202%20running%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a></div>
+            </div><div class="finisher"><span class="fin-label">ADD-ON</span> Grip add-on (any option, 5 min): 3 rounds of plate pinch carries or fat-bar holds. <a class="vid sm" href="https://www.youtube.com/results?search_query=plate%20pinch%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶</a></div></div>
+    </div><div class="card" style="--c:#2E75B6">
+      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ch-left">
+          <span class="tag" style="background:#2E75B6">LOWER</span>
+          <div><div class="card-title">Hinge Day</div><div class="card-sub">Posterior chain — fixes your back & tilt</div></div>
+        </div>
+        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
+      </div>
+      <div class="card-body"><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">RDL from pins/blocks</div>
+        <div class="ex-sr">4 × 8–10</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Bar starts at mid-shin on the rack pins — NOT the floor. Flat back, push hips back, feel the hamstrings. Stop the moment your back wants to round.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=romanian%20deadlift%20from%20pins%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Lying/seated hamstring curl</div>
+        <div class="ex-sr">3 × 10–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">You max these — load hard. Control the lowering.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=lying%20hamstring%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Bulgarian split squat</div>
+        <div class="ex-sr">3 × 8–10 / leg</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Rear foot on a bench, drop straight down, drive through the front heel. Fixes hip weakness.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=bulgarian%20split%20squat%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">45° back extension</div>
+        <div class="ex-sr">3 × 12–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Squeeze glutes at the top, don't over-arch. Bulletproofs your low back with low load.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=45%20degree%20back%20extension%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Cable glute kickback</div>
+        <div class="ex-sr">3 × 12–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Squeeze the glute, no momentum. More anti-tilt glute work.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=cable%20glute%20kickback%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Suitcase carry</div>
+        <div class="ex-sr">3 × 30 m / side</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Weight in ONE hand, walk tall without tipping. Anti-tilt core + grip.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=suitcase%20carry%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="finisher"><span class="fin-label">FINISHER</span> Optional: Backward sled drag × 4–6 lengths. Knee-friendly quad pump. <a class="vid sm" href="https://www.youtube.com/results?search_query=backward%20sled%20drag%20exercise%20how%20to" target="_blank" rel="noopener">▶</a></div></div>
+    </div><div class="card" style="--c:#C0392B">
+      <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ch-left">
+          <span class="tag" style="background:#C0392B">UPPER</span>
+          <div><div class="card-title">Pull Day</div><div class="card-sub">Back & arms — the shirt-off day</div></div>
+        </div>
+        <div class="ch-right"><span class="time">~50 min</span><span class="chev big">⌄</span></div>
+      </div>
+      <div class="card-body"><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Pull-up progression</div>
+        <div class="ex-sr">4 × max</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">See the pull-up plan below. The #1 movement for the frame you want.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=pull%20up%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Chest-supported row</div>
+        <div class="ex-sr">3 × 8–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Chest on the pad = zero back strain. Pull elbows back, squeeze shoulder blades.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=chest%20supported%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Ring row</div>
+        <div class="ex-sr">3 × 10–15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Walk feet forward to make it harder. Great pulling volume.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=ring%20row%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Neutral-grip lat pulldown</div>
+        <div class="ex-sr">3 × 10–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Palms facing each other. Pull to your collarbone, control the way up.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=neutral%20grip%20lat%20pulldown%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Face pull / rear-delt fly</div>
+        <div class="ex-sr">3 × 15–20</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Posture fixer + 3D shoulders. High reps, smooth.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=face%20pull%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">DB or barbell curl</div>
+        <div class="ex-sr">3 × 8–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Your strong point — train it, it shows. No swinging.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=dumbbell%20biceps%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Fat-grip hammer curl</div>
+        <div class="ex-sr">2 × 10–12</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Thick grips if you have them. Forearm + grip + arm thickness.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=hammer%20curl%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div></div>
+    </div>
+
+<div class="section-label">Pull-up Plan · 2–3 → 10+</div>
+<div class="block">
+  <div class="bhead"><h3>Pull-up Progression</h3><div class="bsub">Hit the target, move up a stage. A few easy reps on off days speeds this up.</div></div>
+  <div class="stage"><div class="stage-t">Stage 1 — now</div><div class="stage-d">Max full reps first (e.g. 3,3,2,2), then finish sets with band/machine assist.</div></div><div class="stage"><div class="stage-t">Stage 2 — negatives</div><div class="stage-d">Jump to the top, lower yourself slowly (3–5s). 4 × 3–4.</div></div><div class="stage"><div class="stage-t">Stage 3 — assisted volume</div><div class="stage-d">Band or machine, full range, 4 × 6–8. Reduce help over time.</div></div><div class="stage"><div class="stage-t">Stage 4 — weighted</div><div class="stage-d">Once you hit ~8 clean reps, add a little weight and keep going.</div></div>
+</div>
+
+<div class="section-label">Recovery Days · ×2 · 15–25 min</div>
+<div class="block">
+  <div class="bhead"><h3>Mobility Flow</h3><div class="bsub">Not a day off — this is the prehab. Do the flow, then walk 20–40 min.</div></div>
+  <div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Couch stretch</div>
+        <div class="ex-sr">60s / side</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">The #1 fix for anterior pelvic tilt — lengthens tight hip flexors.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=couch%20stretch%20hip%20flexor%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">90/90 hip switches</div>
+        <div class="ex-sr">10 / side</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Rotate between the two positions. Opens up your hips.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=90%2090%20hip%20switch%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Ankle dorsiflexion rocks</div>
+        <div class="ex-sr">12 / side</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Knee over toes toward a wall, heel down. Reclaims the ankle range you're missing.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=ankle%20dorsiflexion%20mobility%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Dead bug + bird dog</div>
+        <div class="ex-sr">10 / side each</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Slow and controlled. The active half of fixing your tilt.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=dead%20bug%20exercise%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Bodyweight glute bridge</div>
+        <div class="ex-sr">15</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Squeeze hard at the top. Wakes up the glutes.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=glute%20bridge%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Cat-cow + open book</div>
+        <div class="ex-sr">8 each</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Gentle, disc-friendly spine mobility.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=cat%20cow%20open%20book%20stretch%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div><div class="ex">
+      <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="ex-name">Passive bar hang</div>
+        <div class="ex-sr">2 × 30s</div>
+        <div class="chev">⌄</div>
+      </div>
+      <div class="ex-body">
+        <p class="cue">Just hang. Decompresses the spine, builds grip endurance.</p>
+        <a class="vid" href="https://www.youtube.com/results?search_query=passive%20bar%20hang%20exercise%20how%20to" target="_blank" rel="noopener">▶ Watch how</a>
+      </div>
+    </div>
+</div>
+
+<div class="flag"><b>Two non-negotiables:</b> All hinging starts from rack pins/blocks, never the floor. No barbell back squat. Both protect your disc. If anything sends a sharp signal down your back or legs, stop and regress — that's never worth pushing through.</div>
+
+<div class="foot">
+  <b>Progress:</b> add a rep or a little weight each session · keep 1–2 reps in the tank on main lifts.<br>
+  <b>Track:</b> waist + photos beat the scale · holding strength while leaning out = winning.<br>
+  <b>Deload</b> every 6–8 weeks (half the sets, keep it light).<br><br>
+  Worth one physio session to confirm your pelvic tilt is muscular (this plan fixes it) vs structural.
+</div>
+</div>
+<script>
+(function(){
+  function bind(sel){
+    var n=document.querySelectorAll(sel);
+    for(var i=0;i<n.length;i++){
+      n[i].addEventListener('click',function(){this.parentElement.classList.toggle('open');});
+    }
+  }
+  bind('.card-head'); bind('.ex-head');
+  // default everything open so the plan is fully usable even if taps don't register
+  var all=document.querySelectorAll('.card,.ex');
+  for(var i=0;i<all.length;i++){all[i].classList.add('open');}
+})();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW reg failed',e);});});}</script>
+</body></html>
