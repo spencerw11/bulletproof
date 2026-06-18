@@ -511,16 +511,12 @@ header p{font-size:13px;color:#8a97a6;margin-top:5px}
 </div>
 <script>
 (function(){
-  function bind(sel){
-    var n=document.querySelectorAll(sel);
-    for(var i=0;i<n.length;i++){
-      n[i].addEventListener('click',function(){this.parentElement.classList.toggle('open');});
-    }
-  }
-  bind('.card-head'); bind('.ex-head');
-  // default everything open so the plan is fully usable even if taps don't register
-  var all=document.querySelectorAll('.card,.ex');
-  for(var i=0;i<all.length;i++){all[i].classList.add('open');}
+  // Toggle is handled by inline onclick on each header. Previously the page ALSO
+  // bound click listeners here AND force-opened everything — the double toggle
+  // cancelled every tap, leaving one giant always-open list. Single mechanism now.
+  // Start collapsed (clean tappable menu); open the first day so it's obviously interactive.
+  var first=document.querySelector('.card');
+  if(first){first.classList.add('open');}
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW reg failed',e);});});}</script>
